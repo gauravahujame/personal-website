@@ -1,9 +1,9 @@
 ---
 category: 'education'
-university: 'Columbia University'
-degree: 'Bachelor'
-startDate: 'Oct 2005'
-endDate: 'Jul 2008'
+university: 'Indraprastha University'
+degree: 'Bachelor of Computer Applications'
+startDate: 'August 2010'
+endDate: 'July 2013'
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+To pursue a career in the software industry, I pursued bachelors in computer applications from Indraprastha University. This was my first formal education into software programming.

@@ -1,11 +1,9 @@
 ---
 category: 'experiences'
-company: 'Aizoon Reply'
-position: 'UI/UX Designer'
-startDate: 'Jan 2011'
-endDate: 'May 2013'
+company: 'Tweedle Technologies'
+position: 'Software Developer'
+startDate: 'Jan 2018'
+endDate: 'Aug 2019'
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+I joined a nascent product-based startup with the aim of learning how products are built ground-up. At Tweedle, I polished my Javascript while working on technologies like React Native + Graphql. I also explored AWS serverless infrastructure and it's numerous services.

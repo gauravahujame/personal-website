@@ -1,5 +1,5 @@
 ---
 category: 'skills'
-title: 'TypeScript'
-percentage: 76
+title: 'NodeJS'
+percentage: 80
 ---

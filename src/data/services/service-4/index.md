@@ -1,6 +1,6 @@
 ---
 category: 'services'
-title: 'Digital Marketing'
-icon: 'bullhorn'
-description: 'Mauris neque libero, aliquet vel mollis nec, euismod sed tellus. Mauris convallis dictum elit id volutpat.'
+title: 'Cloud Services'
+icon: 'cloud'
+description: 'I have experience with AWS services like serverless lambdas, SQS, SNS, API Gateway, EC2, CloudFormation, LightSail'
 ---

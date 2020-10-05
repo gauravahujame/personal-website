@@ -1,9 +1,10 @@
 ---
 category: 'experiences'
-company: 'Forge Inc'
-position: 'UI/UX Designer'
-startDate: 'Mar 2010'
-endDate: 'Dec 2010'
+company: 'Jellyfish Technologies'
+position: 'Jr. Software Developer'
+startDate: 'Aug 2016'
+endDate: 'Dec 2017'
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+I joined Jellyfish as an intern and secured my position as a Jr. Software Engineer. I worked for a subscription 
+commerce platform named AppDirect. At Jellyfish, I got a chance to explore Java Enterprise backend built using Spring + Hibernate + SQL. 

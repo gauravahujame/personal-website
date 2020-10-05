@@ -1,6 +1,6 @@
 ---
 category: 'services'
-title: 'Graphic Design'
-icon: 'draw-polygon'
-description: 'Mauris neque libero, aliquet vel mollis nec, euismod sed tellus. Mauris convallis dictum elit id volutpat.'
+title: 'Web Apps'
+icon: 'laptop-code'
+description: 'I build React based web applications ranging from single page websites to complex solutions like ecommerce'
 ---

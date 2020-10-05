@@ -1,5 +1,5 @@
 ---
 category: 'skills'
-title: 'JavaScript'
-percentage: 77
+title: 'React Native'
+percentage: 100
 ---

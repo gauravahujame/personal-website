@@ -1,6 +1,6 @@
 ---
 category: 'services'
-title: 'Copywrite'
-icon: 'edit'
-description: 'Mauris neque libero, aliquet vel mollis nec, euismod sed tellus. Mauris convallis dictum elit id volutpat.'
+title: 'Backend'
+icon: 'server'
+description: 'I build backend using NodeJS. I have experience with GraphQL and AWS AppSync. I have built serverless backends using AWS infrastructure.'
 ---
