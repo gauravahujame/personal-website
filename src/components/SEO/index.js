@@ -12,12 +12,15 @@ const SEO = ({ description, lang, meta, title }) => {
             title
             description
             author
+            keywords
           }
         }
       }
     `
   );
 
+
+  const keywords = site.siteMetadata.keywords;
   const metaDescription = description || site.siteMetadata.description;
 
   return (
@@ -31,6 +34,10 @@ const SEO = ({ description, lang, meta, title }) => {
         {
           name: `description`,
           content: metaDescription
+        },
+        {
+          name: `keywords`,
+          content: keywords
         },
         {
           property: `og:title`,

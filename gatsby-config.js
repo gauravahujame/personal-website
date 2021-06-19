@@ -1,8 +1,9 @@
 module.exports = {
   siteMetadata: {
     title: `Gaurav Ahuja`,
-    description: `This is my personal page`,
-    author: `Gaurav Ahuja`
+    description: `Fullstack JS Developer`,
+    author: `Gaurav Ahuja`,
+    keywords: `gaurav, ahuja, gaurav ahuja, developer, react native, mobile apps, applications, fullstack, engineer, nodejs, javascript, new delhi`,
   },
   plugins: [
     `gatsby-plugin-typescript`,
@@ -40,7 +41,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `gatsby-personal-website-starter`,
+        name: `Gaurav Ahuja`,
         short_name: `starter`,
         start_url: `/`,
         background_color: `#ed64a6`,

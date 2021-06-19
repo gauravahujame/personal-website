@@ -9,7 +9,7 @@ import Testimonials from 'components/Testimonials';
 const IndexPage: React.FC = () => {
   return (
     <Layout>
-      <SEO title="Gaurav Ahuja" />
+      <SEO title="Gaurav Ahuja | Fullstack Developer" />
       <HeroBanner />
       <Services />
       <hr />

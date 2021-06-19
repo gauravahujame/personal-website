@@ -7,7 +7,7 @@ import Posts from 'components/Posts';
 const BlogPage: React.FC = () => {
   return (
     <Layout>
-      <SEO title="Blog" />
+      <SEO title="Blog | Gaurav Ahuja" />
       <Posts />
     </Layout>
   );
