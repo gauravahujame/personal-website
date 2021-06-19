@@ -1,7 +1,7 @@
 ---
 category: 'testimonials'
-cover: './testimonial-3.jpg'
-title: 'Jordan Baker'
+cover: './testimonial-1.jpg'
+title: 'Francisco Mendoza'
 ---
 
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+As always, really satisfied with Gaurav's work. Always going the extra mile for achieving the best user experience possible.

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import tw from 'tailwind.macro';
 
-export const Testimonials = styled.div`
-  ${tw`max-w-screen-sm mx-auto w-full px-0 sm:px-16 mb-4`};
+export const Testimonials = styled.section`
+  ${tw`bg-gray-100 border-t border-indigo-100 mt-auto`};
 `;
 
 export const Testimonial = styled.div`

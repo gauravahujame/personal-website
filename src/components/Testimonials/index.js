@@ -45,30 +45,30 @@ const Testimonials = () => {
   const testimonials = allMarkdownRemark.edges;
 
   return (
-    <Container section>
-      <TitleSection title={sectionTitle.title} subtitle={sectionTitle.subtitle} center />
-      <Styled.Testimonials>
-        <Carousel>
-          {testimonials.map((item) => {
-            const {
-              id,
-              html,
-              frontmatter: { cover, title }
-            } = item.node;
+    <Styled.Testimonials>
+      <Container section>
+        <TitleSection title={sectionTitle.title} subtitle={sectionTitle.subtitle} center />
+          <Carousel>
+            {testimonials.map((item) => {
+              const {
+                id,
+                html,
+                frontmatter: { cover, title }
+              } = item.node;
 
-            return (
-              <Styled.Testimonial key={id}>
-                <Styled.Image>
-                  <Img fluid={cover.childImageSharp.fluid} alt={title} />
-                </Styled.Image>
-                <Styled.Title>{title}</Styled.Title>
-                <FormatHtml content={html} />
-              </Styled.Testimonial>
-            );
-          })}
-        </Carousel>
-      </Styled.Testimonials>
-    </Container>
+              return (
+                <Styled.Testimonial key={id}>
+                  {/* <Styled.Image>
+                    <Img fluid={cover.childImageSharp.fluid} alt={title} />
+                  </Styled.Image> */}
+                  <Styled.Title>{title}</Styled.Title>
+                  <FormatHtml content={html} />
+                </Styled.Testimonial>
+              );
+            })}
+          </Carousel>
+      </Container>
+    </Styled.Testimonials>
   );
 };
 

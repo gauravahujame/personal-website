@@ -1,7 +1,7 @@
 ---
 category: 'testimonials'
 cover: './testimonial-1.jpg'
-title: 'Nick Carraway'
+title: 'Alex Beaman'
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Really impressed by his expertise in building mobile solutions. He has always delivered quality products within deadlines. I will surely work with him again.
