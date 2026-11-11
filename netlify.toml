@@ -6,7 +6,7 @@
 [build.environment]
   NODE_VERSION = "24"
 
-# Pages from the old Gatsby site.
+# URLs from the previous version of the site, kept so old links still work.
 [[redirects]]
   from = "/resume"
   to = "/#experience"

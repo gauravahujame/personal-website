@@ -1,5 +1,7 @@
 # gauravahuja.dev
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/75d86b3a-1d6c-4dff-99cd-d7707d9c97e7/deploy-status)](https://app.netlify.com/projects/epic-heisenberg-7dc639/deploys)
+
 Source for [www.gauravahuja.dev](https://www.gauravahuja.dev), a one-page personal site built with [Astro](https://astro.build) and plain CSS. It links to the notes at [notes.gauravahuja.dev](https://notes.gauravahuja.dev), a separate Quartz site that shares its design language.
 
 ## Develop
@@ -63,4 +65,18 @@ Mackinac comes from the Adobe Fonts kit `pso3wdg`; the kit's allowed domains mus
 
 ## Deploy
 
-Netlify builds from `netlify.toml` (`npm run build`, publishes `dist/`). Old `/resume` and `/contact` URLs redirect to sections of the home page, and `/blog/*` redirects to the notes site.
+The site deploys on Netlify as [epic-heisenberg-7dc639](https://app.netlify.com/projects/epic-heisenberg-7dc639/deploys). Every push to the production branch triggers a build; the badge above shows the latest deploy.
+
+All build settings live in `netlify.toml`, so the Netlify dashboard needs no build overrides:
+
+| Setting           | Value               |
+| ----------------- | ------------------- |
+| Build command     | `npm run build`     |
+| Publish directory | `dist`              |
+| Node              | 24 (`NODE_VERSION`) |
+
+`netlify.toml` also sets security headers, long-lived caching for hashed assets in `/_astro/`, and 301 redirects for URLs from the previous version of the site: `/resume` and `/contact` go to sections of the home page, and `/blog/*` goes to the notes site.
+
+## License
+
+[MIT](LICENSE)
