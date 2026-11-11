@@ -1,0 +1,157 @@
+---
+import SectionHeader from '../SectionHeader.astro';
+import { PERSON, SOCIAL_LINKS } from '../../data/profile';
+
+// Lets long addresses wrap at the @ instead of mid-word.
+const [emailUser = '', emailDomain = ''] = PERSON.email.split('@');
+---
+
+<section id="contact" class="page section" aria-labelledby="contact-title">
+  <SectionHeader index="06" kicker="contact" id="contact-title" title="Say hello" />
+
+  <div class="contact" data-reveal>
+    <div class="copy">
+      <p class="lead">
+        I’m always glad to hear about interesting engineering work, open-source projects or a collaboration.
+      </p>
+      <p>
+        I’m also happy to just talk shop: software, AI, homelabs or the strange places where code meets music. Email
+        reaches me fastest.
+      </p>
+    </div>
+
+    <div class="channels">
+      <a class="email" href={`mailto:${PERSON.email}`}>
+        <span class="meta">Email</span>
+        <span class="address">
+          {emailUser}
+          <wbr />@{emailDomain}
+        </span>
+      </a>
+      <button class="copy-btn meta" type="button" data-copy={PERSON.email} hidden>
+        <span data-copy-label>Copy address</span>
+      </button>
+      <ul class="social" aria-label="Elsewhere">
+        {SOCIAL_LINKS.map((link) => (
+          <li>
+            <a class="pill pill--quiet ext" href={link.href} rel="me">
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    if (!navigator.clipboard) continue;
+    button.hidden = false;
+    const label = button.querySelector<HTMLElement>('[data-copy-label]');
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy ?? '');
+        if (label) label.textContent = 'Copied';
+      } catch {
+        if (label) label.textContent = 'Couldn’t copy';
+      }
+      window.setTimeout(() => {
+        if (label) label.textContent = 'Copy address';
+      }, 2000);
+    });
+  }
+</script>
+
+<style>
+  .section:last-of-type {
+    padding-bottom: 1rem;
+  }
+
+  .contact {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .copy {
+    max-width: 38rem;
+  }
+
+  @media (min-width: 640px) {
+    .lead {
+      font-size: 1.5rem;
+      line-height: 1.5;
+    }
+  }
+
+  .channels {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+  }
+
+  .email {
+    display: grid;
+    gap: 0.25rem;
+    padding: 1.5rem;
+    border-radius: var(--radius-card);
+    background: var(--accent-fill);
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    text-decoration: none;
+    transition:
+      background-color 0.2s ease,
+      transform 0.3s var(--ease);
+  }
+
+  .email:hover {
+    background: var(--accent-fill-strong);
+  }
+
+  .email .meta {
+    color: var(--accent);
+  }
+
+  .address {
+    font-family: var(--mackinac);
+    font-weight: 500;
+    font-size: clamp(1.25rem, 0.95rem + 1vw, 1.625rem);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .email:hover .address {
+    color: var(--accent-strong);
+  }
+
+  .copy-btn {
+    justify-self: start;
+    min-height: 2.25rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink-muted);
+    cursor: pointer;
+  }
+
+  .copy-btn:hover {
+    color: var(--accent);
+    background: var(--hover-fill);
+  }
+
+  .social {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 1024px) {
+    .contact {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: 4rem;
+      margin-left: calc(14rem + 2rem);
+    }
+  }
+</style>

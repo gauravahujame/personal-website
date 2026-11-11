@@ -1,0 +1,73 @@
+---
+// Couch Reader: a TV showing a book, the remote's D-pad, and a phone uploading over the home network.
+---
+
+<svg class="diagram" style="--vbw: 360" viewBox="0 0 360 230" role="img" aria-labelledby="tv-title">
+  <title id="tv-title">
+    A TV showing an open book. Left and right on the remote turn pages; a phone on the same network uploads books by
+    scanning a QR code.
+  </title>
+
+  <!-- TV -->
+  <rect class="d-node" x="10" y="14" width="236" height="144" rx="10"></rect>
+  <path class="d-line" d="M98 172 H158 M128 158 V172"></path>
+  <!-- Two-page spread -->
+  <rect x="34" y="34" width="188" height="104" rx="4" fill="var(--well)"></rect>
+  <path class="d-line" d="M128 38 V134"></path>
+  <g class="lines">
+    <path
+      class="d-line"
+      d="M46 52 H116 M46 62 H112 M46 72 H116 M46 82 H104 M46 92 H116 M46 102 H110 M46 112 H90"
+    ></path>
+    <path
+      class="d-line"
+      d="M140 52 H210 M140 62 H206 M140 72 H210 M140 82 H198 M140 92 H210 M140 102 H204 M140 112 H170"
+    ></path>
+  </g>
+  <text x="128" y="152" text-anchor="middle">
+    ch. 4 · 37%
+  </text>
+
+  <!-- Remote -->
+  <rect class="d-node" x="282" y="20" width="58" height="150" rx="22"></rect>
+  <circle class="d-node" cx="311" cy="68" r="22"></circle>
+  <circle class="d-accent-soft" cx="311" cy="68" r="8" stroke-width="1.25"></circle>
+  <path class="d-line d-accent page-l" d="M296 68 l5 -5 m-5 5 l5 5"></path>
+  <path class="d-line d-accent page-r" d="M326 68 l-5 -5 m5 5 l-5 5"></path>
+  <path class="d-line" d="M311 50 l-4 4 m4 -4 l4 4 M311 86 l-4 -4 m4 4 l4 -4"></path>
+  <circle class="d-node" cx="300" cy="112" r="6"></circle>
+  <circle class="d-node" cx="322" cy="112" r="6"></circle>
+  <text x="311" y="190" text-anchor="middle">
+    ◀ ▶ turn
+  </text>
+  <text x="311" y="204" text-anchor="middle">
+    OK controls
+  </text>
+
+  <!-- Phone upload -->
+  <rect class="d-node" x="30" y="190" width="26" height="34" rx="5"></rect>
+  <rect class="d-fill" x="37" y="198" width="4" height="4"></rect>
+  <rect class="d-fill" x="45" y="198" width="4" height="4"></rect>
+  <rect class="d-fill" x="37" y="206" width="4" height="4"></rect>
+  <rect class="d-fill" x="45" y="210" width="4" height="4"></rect>
+  <path class="d-line d-dash" d="M60 206 H128 V176"></path>
+  <text x="138" y="204">
+    upload over Wi-Fi
+  </text>
+</svg>
+
+<style>
+  /* The page arrows nudge outward when the card is hovered. */
+  .page-l,
+  .page-r {
+    transition: transform 0.4s var(--ease);
+  }
+
+  :global(.project:hover) .page-l {
+    transform: translateX(-2px);
+  }
+
+  :global(.project:hover) .page-r {
+    transform: translateX(2px);
+  }
+</style>

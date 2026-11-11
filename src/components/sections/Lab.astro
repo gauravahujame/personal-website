@@ -1,0 +1,245 @@
+---
+import SectionHeader from '../SectionHeader.astro';
+import StatusBadge from '../StatusBadge.astro';
+import StackList from '../StackList.astro';
+import Visual from '../diagrams/Visual.astro';
+import { LAB } from '../../data/lab';
+import type { Status } from '../../data/status';
+
+// Legend shows only the statuses that are actually used.
+const usedStatuses = [...new Set(LAB.map((entry) => entry.status).filter(Boolean))] as Status[];
+---
+
+<section id="lab" class="page section" aria-labelledby="lab-title">
+  <SectionHeader
+    index="02"
+    kicker="the lab"
+    id="lab-title"
+    title="The Lab"
+    subtitle="Things I’m building, breaking, and figuring out."
+  >
+    <ul class="legend" aria-label="Status key">
+      {usedStatuses.map((status) => (
+        <li>
+          <StatusBadge status={status} />
+        </li>
+      ))}
+    </ul>
+  </SectionHeader>
+
+  <p class="intro measure">
+    Selected Work is what’s finished enough to share. This is the bench next to it: ongoing experiments in AI,
+    infrastructure, hardware and sound. Some will become projects, and some will just teach me something.
+  </p>
+
+  <div class="lab">
+    {LAB.map((entry, index) => (
+      <article
+        class:list={['lab-entry', `lab-entry--${entry.size}`]}
+        id={`lab-${entry.id}`}
+        aria-labelledby={`lab-${entry.id}-title`}
+        data-reveal
+      >
+        <div class="head">
+          <span class="meta n">{`L${String(index + 1).padStart(2, '0')}`}</span>
+          {entry.status && <StatusBadge status={entry.status} />}
+        </div>
+        <h3 id={`lab-${entry.id}-title`}>{entry.title}</h3>
+        <p class="summary small">{entry.summary}</p>
+        {entry.visual && (
+          <div class="visual diagram-frame">
+            <Visual name={entry.visual} />
+          </div>
+        )}
+        <div class="foot">
+          <StackList items={entry.topics} label={`Topics in ${entry.title}`} />
+          {entry.link && (
+            <a class:list={['ui', 'more', { ext: entry.link.href.startsWith('http') }]} href={entry.link.href}>
+              {entry.link.label}
+            </a>
+          )}
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .legend {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .intro {
+    margin: -0.5rem 0 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .intro {
+      margin-left: calc(14rem + 2rem);
+    }
+  }
+
+  .lab {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .lab-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 1.5rem;
+    border-radius: var(--radius-card);
+  }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .n {
+    color: var(--accent);
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+
+  .summary {
+    margin: 0;
+    max-width: 38rem;
+  }
+
+  .visual {
+    margin-block: 0.75rem;
+  }
+
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem 1.5rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+  }
+
+  .more {
+    font-size: 1rem;
+  }
+
+  /* Three treatments so the lab reads as a bench, not a grid of clones. */
+  /* Large: a full card with the diagram in a well. */
+  .lab-entry--large {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-card);
+  }
+
+  .lab-entry--large .visual {
+    padding: 1.25rem;
+    background: var(--well);
+    border-radius: var(--radius-media);
+  }
+
+  /* Medium: open notebook entry under an accent rule. */
+  .lab-entry--medium {
+    border-radius: 0;
+    padding-inline: 0;
+    border-top: 2px solid var(--accent);
+  }
+
+  @media (min-width: 1024px) {
+    .lab-entry--medium {
+      padding-inline: 0.5rem;
+    }
+  }
+
+  /* Small: a sunk tile. */
+  .lab-entry--small {
+    background: var(--well);
+    border: 1px solid var(--line-subtle);
+  }
+
+  .lab-entry--small h3 {
+    font-size: 1.28125rem;
+  }
+
+  @media (min-width: 640px) {
+    .lab {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .lab-entry--large {
+      grid-column: 1 / -1;
+      padding: 2rem;
+    }
+
+    h3 {
+      font-size: 1.75rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .lab {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 1.5rem 2rem;
+    }
+
+    .lab-entry--large {
+      grid-column: span 7;
+    }
+
+    .lab-entry--medium {
+      grid-column: span 5;
+    }
+
+    .lab-entry--small {
+      grid-column: span 6;
+    }
+
+    /* Small tiles: text and diagram side by side. */
+    .lab-entry--small {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        'head head'
+        'title visual'
+        'summary visual'
+        'foot foot';
+      align-content: start;
+      column-gap: 1.5rem;
+    }
+
+    .lab-entry--small .head {
+      grid-area: head;
+    }
+
+    .lab-entry--small h3 {
+      grid-area: title;
+    }
+
+    .lab-entry--small .summary {
+      grid-area: summary;
+    }
+
+    .lab-entry--small .visual {
+      grid-area: visual;
+      align-self: center;
+      margin: 0;
+    }
+
+    .lab-entry--small .foot {
+      grid-area: foot;
+    }
+  }
+</style>

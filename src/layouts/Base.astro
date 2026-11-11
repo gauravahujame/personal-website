@@ -1,0 +1,174 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { PERSON, SITE_URL, SOCIAL_LINKS } from '../data/profile';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Path of the social preview image, relative to the site root. */
+  image?: string;
+  imageAlt?: string;
+  /** Adds Person structured data. Only for the home page. */
+  structuredData?: boolean;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = PERSON.description,
+  image = '/og.png',
+  imageAlt = `${PERSON.name}, ${PERSON.role.toLowerCase()} in ${PERSON.location}`,
+  structuredData = false,
+  noindex = false
+} = Astro.props;
+
+const GOOGLE_FONTS =
+  'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Fragment+Mono&display=swap';
+const ADOBE_FONTS = 'https://use.typekit.net/pso3wdg.css';
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE_URL).href;
+const ogImage = new URL(image, Astro.site ?? SITE_URL).href;
+
+// Person schema with verified facts only.
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: PERSON.name,
+  url: SITE_URL,
+  image: ogImage,
+  jobTitle: PERSON.role,
+  email: `mailto:${PERSON.email}`,
+  address: { '@type': 'PostalAddress', addressLocality: PERSON.location, addressCountry: 'IN' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Indraprastha University' },
+  knowsAbout: ['React', 'React Native', 'TypeScript', 'Node.js', 'Mobile engineering', 'Fintech', 'Local AI inference'],
+  sameAs: [...SOCIAL_LINKS.map((link) => link.href), 'https://notes.gauravahuja.dev']
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={PERSON.name} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <meta name="theme-color" content="#fffcf0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1b1a18" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={PERSON.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="profile:first_name" content="Gaurav" />
+    <meta property="profile:last_name" content="Ahuja" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {structuredData && <script type="application/ld+json" set:html={JSON.stringify(person)} />}
+
+    <!-- Theme before first paint: saved choice (same key as the notes site), else the OS setting. -->
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let saved = null;
+        try {
+          saved = localStorage.getItem('theme');
+        } catch {}
+        const system = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        root.setAttribute('saved-theme', saved === 'dark' || saved === 'light' ? saved : system);
+      })();
+    </script>
+
+    <!-- Fonts: Bricolage Grotesque and Fragment Mono (Google), P22 Mackinac Pro (Adobe kit). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://use.typekit.net" crossorigin />
+    <!-- Loaded without blocking render; metric-matched fallbacks in global.css prevent layout shift. -->
+    <link rel="stylesheet" href={GOOGLE_FONTS} media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href={ADOBE_FONTS} media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href={GOOGLE_FONTS} />
+      <link rel="stylesheet" href={ADOBE_FONTS} />
+    </noscript>
+  </head>
+  <body>
+    <a class="skip ui" href="#main">
+      Skip to content
+    </a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      // Reveal sections as they scroll into view. Content is visible without JS
+      // and under reduced motion (see global.css).
+      const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
+        );
+        items.forEach((item) => observer.observe(item));
+      } else {
+        items.forEach((item) => item.classList.add('is-visible'));
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  main {
+    flex: 1;
+    outline: none;
+  }
+
+  .skip {
+    position: fixed;
+    z-index: 100;
+    left: 1rem;
+    top: -4rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-card);
+    font-size: 1rem;
+    text-decoration: none;
+  }
+
+  .skip:focus {
+    top: 1rem;
+  }
+</style>

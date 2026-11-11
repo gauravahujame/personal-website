@@ -1,0 +1,555 @@
+/*
+ * Design system for www.gauravahuja.dev.
+ *
+ * Shares its type system, inks and accent with the notes site
+ * (quartz/styles/custom.scss and .kiro/steering/ui-design-language.md in the
+ * Quartz repo): Mackinac headings, light Bricolage text, navy/gray inks and a
+ * single purple accent. This site adds a monospace metadata role, status
+ * colours, diagram tokens and a charcoal dark theme.
+ *
+ * Rules: components use tokens only (literals live in token definitions);
+ * mobile-first with 640px (sm), 1024px (lg) and 1280px (xl) breakpoints;
+ * every animation is disabled under prefers-reduced-motion.
+ */
+
+/* ── Font fallbacks ────────────────────────────────────────────── */
+/* Local fonts resized to the web fonts' measured width and metrics, so the
+   swap when the web fonts arrive doesn't move the layout. */
+@font-face {
+  font-family: 'Mackinac Fallback';
+  src: local('Georgia');
+  size-adjust: 106.8%;
+  ascent-override: 86%;
+  descent-override: 22.5%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Mackinac Fallback';
+  font-style: italic;
+  src: local('Georgia Italic'), local('Georgia-Italic');
+  size-adjust: 104.2%;
+  ascent-override: 88.3%;
+  descent-override: 23%;
+  line-gap-override: 0%;
+}
+
+/* Bricolage's width changes with weight, so light and medium text get their own fallback. */
+@font-face {
+  font-family: 'Bricolage Fallback';
+  font-weight: 450 800;
+  src: local('Arial'), local('Helvetica');
+  size-adjust: 94.5%;
+  ascent-override: 98.4%;
+  descent-override: 28.6%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Bricolage Fallback';
+  font-weight: 100 449;
+  src: local('Arial'), local('Helvetica');
+  size-adjust: 91.9%;
+  ascent-override: 100.5%;
+  descent-override: 29.2%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Fragment Fallback';
+  src: local('Menlo Regular'), local('Menlo-Regular'), local('DejaVu Sans Mono'), local('Consolas');
+  size-adjust: 102.6%;
+  ascent-override: 92.6%;
+  descent-override: 24.4%;
+  line-gap-override: 0%;
+}
+
+/* ── Colour: light ─────────────────────────────────────────────── */
+:root,
+:root[saved-theme='light'] {
+  color-scheme: light;
+
+  /* Surfaces: Flexoki paper, a slightly brighter card and a sunk well. */
+  --bg: #fffcf0;
+  --surface: #fffdf7;
+  --well: #f6f3e5;
+
+  /* Inks, strongest to faintest. */
+  --ink-strong: #191034;
+  --ink: #22183c;
+  --ink-text: #4c4e67;
+  --ink-muted: #5f6382; /* 5.6:1 on --bg, used for all small text */
+  --ink-faint: #9698b6; /* decorative only: rules, diagram strokes */
+
+  --accent: #7c3aed;
+  --accent-strong: #6d28d9;
+
+  --line: rgba(91, 33, 182, 0.12);
+  --shadow-tint: rgba(91, 33, 182, 0.075);
+
+  /* Status dots (Flexoki 600s). */
+  --status-active: #66800b;
+  --status-experimental: #ad8301;
+  --status-completed: #205ea6;
+  --status-concept: #9698b6;
+
+  /* Piano keys keep real-world colours in both modes. */
+  --key-white: #fffdf7;
+  --key-black: #22183c;
+  --key-lit: #d9c9f7;
+}
+
+/* ── Colour: dark ──────────────────────────────────────────────── */
+/* Warm charcoal rather than black; inks are Flexoki base tones. */
+:root[saved-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #1b1a18;
+  --surface: #222120;
+  --well: #171614;
+
+  --ink-strong: #f2f0e5;
+  --ink: #e6e4d9;
+  --ink-text: #c2c0b6;
+  --ink-muted: #9d9a91; /* 6.3:1 on --bg */
+  --ink-faint: #5f5d58;
+
+  --accent: #b1a5dc;
+  --accent-strong: #cdc4ea;
+
+  --line: rgba(177, 165, 220, 0.16);
+  --shadow-tint: rgba(0, 0, 0, 0.35);
+
+  --status-active: #879a39;
+  --status-experimental: #d0a215;
+  --status-completed: #4385be;
+  --status-concept: #6f6e69;
+
+  --key-white: #e6e4d9;
+  --key-black: #1b1a18;
+  --key-lit: #b1a5dc;
+}
+
+/* ── Mode-independent tokens ───────────────────────────────────── */
+:root {
+  --line-subtle: color-mix(in srgb, var(--ink) 10%, transparent);
+  --hover-fill: color-mix(in srgb, var(--ink) 5%, transparent);
+  --accent-fill: color-mix(in srgb, var(--accent) 12%, transparent);
+  --accent-fill-strong: color-mix(in srgb, var(--accent) 18%, transparent);
+  --scrollbar: color-mix(in srgb, var(--ink) 25%, transparent);
+  --header-bg: color-mix(in srgb, var(--bg) 92%, transparent);
+
+  /* Diagrams */
+  --diagram-stroke: color-mix(in srgb, var(--ink) 38%, transparent);
+  --diagram-node: var(--surface);
+  --diagram-text: var(--ink-muted);
+
+  /* Shape */
+  --radius-card: 16px;
+  --radius-media: 12px;
+  --radius-inner: 8px;
+  --radius-pill: 999px;
+
+  /* Elevation */
+  --shadow-card: 0 10px 15px -3px var(--shadow-tint), 0 4px 6px -4px var(--shadow-tint);
+  --shadow-lift: 0 22px 40px -18px var(--shadow-tint), 0 8px 14px -8px var(--shadow-tint);
+  --shadow-media: 0 8px 30px -12px rgb(0 0 0 / 0.25);
+  --blur: 12px;
+
+  /* Type */
+  --mackinac: 'p22-mackinac-pro', 'Mackinac Fallback', Georgia, serif;
+  --bodyFont: 'Bricolage Grotesque', 'Bricolage Fallback', system-ui, sans-serif;
+  --codeFont: 'Fragment Mono', 'Fragment Fallback', ui-monospace, monospace;
+
+  /* Layout */
+  --page: 72rem;
+  --column: 44rem;
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
+  --header-height: 4.25rem;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (max-width: 639px) {
+  :root {
+    --header-height: 6.25rem; /* name row + nav row */
+  }
+}
+
+/* ── Base ──────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + 1rem);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Reading text: Bricolage 325, slightly narrow, optical size fixed at 24. */
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink-text);
+  font-family: var(--bodyFont);
+  font-weight: 325;
+  font-stretch: 98.5%;
+  font-variation-settings: 'opsz' 24;
+  font-size: 1rem;
+  line-height: 1.625;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+@media (min-width: 640px) {
+  body {
+    font-size: 1.1875rem; /* 19px */
+    line-height: 1.6;
+  }
+}
+
+:is(h1, h2, h3, h4) {
+  font-family: var(--mackinac);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  word-spacing: 0.025em;
+  line-height: 1.325;
+  color: var(--ink-strong);
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0 0 1.25rem;
+  text-wrap: pretty;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+strong {
+  font-weight: 500;
+  font-stretch: 98%;
+  letter-spacing: -0.005em;
+  color: var(--ink-strong);
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+button {
+  font: inherit;
+}
+
+code,
+kbd {
+  font-family: var(--codeFont);
+  font-variation-settings: normal;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-inner);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Links: ink with a faint underline, accent on hover ────────── */
+a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  text-underline-offset: 2px;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+/* Arrow after links that leave the site. */
+.ext::after {
+  content: '↗';
+  display: inline-block;
+  margin-left: 0.2em;
+  font-size: 0.85em;
+  text-decoration: none;
+  transition: transform 0.2s var(--ease);
+}
+
+.ext:hover::after {
+  transform: translate(1px, -1px);
+}
+
+/* ── Layout ────────────────────────────────────────────────────── */
+.page {
+  width: 100%;
+  max-width: calc(var(--page) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.measure {
+  max-width: var(--column);
+}
+
+/* ── Type roles ────────────────────────────────────────────────── */
+/* Small uppercase label (Bricolage 575). */
+.label {
+  font-size: 0.75rem;
+  font-weight: 575;
+  font-stretch: 97.5%;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+
+/* Technical metadata: stacks, dates, statuses, annotations. */
+.meta {
+  font-family: var(--codeFont);
+  font-variation-settings: normal;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+
+/* UI text: nav, buttons, card titles. */
+.ui {
+  font-weight: 450;
+  font-stretch: 98%;
+}
+
+.lead {
+  font-size: 1.28125rem; /* 20.5px */
+  font-weight: 500;
+  font-stretch: 98%;
+  letter-spacing: -0.025em;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+/* Card copy (callout role in the garden). */
+.small {
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+/* ── Pills ─────────────────────────────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-height: 2.75rem; /* touch target */
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  font-size: 1rem;
+  font-weight: 450;
+  font-stretch: 98%;
+  line-height: 1.4;
+  text-decoration: none;
+  color: var(--accent);
+  background-color: var(--accent-fill);
+}
+
+.pill:hover {
+  color: var(--accent-strong);
+  background-color: var(--accent-fill-strong);
+}
+
+.pill--quiet {
+  color: var(--ink);
+  background-color: transparent;
+  border-color: var(--line);
+}
+
+.pill--quiet:hover {
+  color: var(--accent);
+  background-color: var(--hover-fill);
+}
+
+.pill .arrow {
+  transition: transform 0.2s var(--ease);
+}
+
+.pill:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* ── Cards ─────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* ── Diagrams (inline SVG) ─────────────────────────────────────── */
+/* Each diagram sets --vbw to its viewBox width. Capping it at 1.2× keeps
+   label text near 11–13px instead of growing with the card. */
+.diagram {
+  width: 100%;
+  max-width: calc(var(--vbw, 10000) * 1.2px);
+  height: auto;
+  margin-inline: auto;
+  overflow: visible;
+  color: var(--diagram-stroke);
+}
+
+/* On narrow screens wide diagrams keep a readable size and scroll sideways
+   inside their frame instead of shrinking their labels. */
+.diagram-frame {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.diagram-frame .diagram {
+  min-width: calc(var(--vbw, 0) * 0.78px);
+}
+
+.diagram text {
+  font-family: var(--codeFont);
+  font-size: 11px;
+  fill: var(--diagram-text);
+}
+
+.diagram .d-title {
+  fill: var(--ink);
+}
+
+.diagram .d-line {
+  fill: none;
+  stroke: var(--diagram-stroke);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.diagram .d-dash {
+  stroke-dasharray: 3 4;
+}
+
+.diagram .d-node {
+  fill: var(--diagram-node);
+  stroke: var(--diagram-stroke);
+  stroke-width: 1.25;
+}
+
+.diagram .d-fill {
+  fill: var(--diagram-stroke);
+}
+
+.diagram .d-accent {
+  stroke: var(--accent);
+}
+
+.diagram .d-accent-fill {
+  fill: var(--accent);
+}
+
+.diagram .d-accent-soft {
+  fill: var(--accent-fill);
+  stroke: var(--accent);
+}
+
+/* ── Reveal on scroll ──────────────────────────────────────────── */
+/* Only hidden once JS has confirmed it can reveal them. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s var(--ease),
+    transform 0.7s var(--ease);
+}
+
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Scrollbars ────────────────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+}
+
+/* ── Theme switch cross-fade ───────────────────────────────────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.35s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -1,0 +1,68 @@
+---
+import { STATUS_LABELS, type Status } from '../data/status';
+
+interface Props {
+  status: Status;
+  /** Optional verified detail, e.g. "Live" or "In development". */
+  note?: string | undefined;
+}
+
+const { status, note } = Astro.props;
+---
+
+<span class="status meta" data-status={status}>
+  <span class="dot" aria-hidden="true"></span>
+  <span>
+    <span class="sr-only">Status: </span>
+    {note ?? STATUS_LABELS[status]}
+  </span>
+</span>
+
+<style>
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.15rem 0.6rem 0.15rem 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--ink-muted);
+    white-space: nowrap;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background: var(--dot);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--dot) 18%, transparent);
+  }
+
+  [data-status='active'] {
+    --dot: var(--status-active);
+  }
+
+  [data-status='experimental'] {
+    --dot: var(--status-experimental);
+  }
+
+  [data-status='completed'] {
+    --dot: var(--status-completed);
+  }
+
+  [data-status='concept'] {
+    --dot: var(--status-concept);
+  }
+
+  /* A slow pulse on active work. */
+  [data-status='active'] .dot {
+    animation: pulse 2.4s var(--ease) infinite;
+  }
+
+  @keyframes pulse {
+    50% {
+      box-shadow: 0 0 0 5px color-mix(in srgb, var(--dot) 8%, transparent);
+    }
+  }
+</style>

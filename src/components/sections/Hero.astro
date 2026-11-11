@@ -1,0 +1,279 @@
+---
+import { Image } from 'astro:assets';
+import profile from '../../assets/profile.png';
+import StatusBadge from '../StatusBadge.astro';
+import { CURRENTLY, NOTES_URL, PERSON, yearsOfExperience } from '../../data/profile';
+
+const years = yearsOfExperience();
+---
+
+<section class="hero page" aria-labelledby="hero-title">
+  <div class="intro">
+    <p class="meta identity">
+      <span>{PERSON.name}</span>
+      <span aria-hidden="true">—</span>
+      <span>{PERSON.role}</span>
+      <span class="sep-loc" aria-hidden="true">
+        ·
+      </span>
+      <span class="loc">
+        {PERSON.location}, {PERSON.country}
+      </span>
+    </p>
+    <h1 id="hero-title">
+      Building software, <em>exploring everything around it.</em>
+    </h1>
+    <p class="lead">
+      I’m {PERSON.givenName}, a software engineer with more than {years} years of turning ideas into production apps.
+    </p>
+    <p class="body measure">
+      Most of my work has been web and mobile engineering: fintech products, payments and mobile banking, and leading
+      the teams that ship them. Outside work I run a homelab and experiment with AI agents, local language models,
+      electronics and music.
+    </p>
+    <div class="actions">
+      <a class="pill" href="#work">
+        Selected work{' '}
+        <span class="arrow" aria-hidden="true">
+          ↓
+        </span>
+      </a>
+      <a class="pill pill--quiet" href={NOTES_URL}>
+        Read the garden{' '}
+        <span class="arrow" aria-hidden="true">
+          →
+        </span>
+      </a>
+      <a class="contact-link ui" href="#contact">
+        Get in touch
+      </a>
+    </div>
+  </div>
+
+  <aside class="side" aria-label="About me at a glance">
+    <div class="portrait-wrap">
+      <Image
+        class="portrait"
+        src={profile}
+        alt={`Portrait of ${PERSON.name}`}
+        widths={[160, 320, 480]}
+        sizes="(min-width: 1024px) 160px, 112px"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <div class="facts meta">
+        <p>
+          <span class="k">since</span> 2016
+        </p>
+        <p>
+          <span class="k">based in</span> {PERSON.location}
+        </p>
+      </div>
+    </div>
+
+    <div class="currently card">
+      <p class="label">Currently exploring</p>
+      <ul>
+        {CURRENTLY.map((item) => (
+          <li>
+            <span class="topic ui">{item.topic}</span>
+            <span class="detail meta">{item.detail}</span>
+            {item.status && <StatusBadge status={item.status} />}
+          </li>
+        ))}
+      </ul>
+      <a class="meta lab-link" href="#lab">
+        More in the lab →
+      </a>
+    </div>
+  </aside>
+</section>
+
+<style>
+  .hero {
+    display: grid;
+    gap: 2.5rem;
+    padding-top: 2.5rem;
+    padding-bottom: 4rem;
+  }
+
+  .identity {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+    margin: 0 0 1.25rem;
+  }
+
+  .identity span:first-child {
+    color: var(--ink);
+  }
+
+  /* Phones: location on its own line, so the wrap doesn't depend on which
+     font has loaded (avoids a layout shift when Fragment Mono arrives). */
+  @media (max-width: 639px) {
+    .identity .sep-loc {
+      display: none;
+    }
+
+    .identity .loc {
+      flex-basis: 100%;
+    }
+  }
+
+  /* Display title: one step above the garden's article title. */
+  h1 {
+    font-size: clamp(2.25rem, 1.2rem + 4.6vw, 4.25rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 1.75rem;
+    max-width: 15ch;
+  }
+
+  h1 em {
+    display: block;
+    font-style: italic;
+    color: var(--ink-muted);
+  }
+
+  .lead {
+    max-width: 34rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .lead {
+      font-size: 1.5rem;
+      line-height: 1.5;
+    }
+  }
+
+  .body {
+    max-width: 36rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin-top: 2rem;
+  }
+
+  .contact-link {
+    font-size: 1rem;
+    padding-inline: 0.25rem;
+  }
+
+  /* ── Side column ── */
+  .side {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+  }
+
+  .portrait-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .portrait {
+    width: 7rem;
+    height: 7rem;
+    border-radius: var(--radius-pill);
+    object-fit: cover;
+    box-shadow: var(--shadow-media);
+    outline: 1px solid var(--line);
+    outline-offset: 4px;
+  }
+
+  .facts p {
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .facts .k {
+    display: inline-block;
+    min-width: 5.5rem;
+    color: var(--ink-muted);
+  }
+
+  .currently {
+    padding: 1.25rem 1.25rem 1rem;
+  }
+
+  .currently .label {
+    margin: 0 0 0.75rem;
+  }
+
+  .currently ul {
+    list-style: none;
+  }
+
+  .currently li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 0.75rem;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  .topic {
+    font-size: 1rem;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+
+  .detail {
+    grid-column: 1;
+  }
+
+  .currently li > :global(.status) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .lab-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: var(--ink-muted);
+    text-decoration: none;
+  }
+
+  .lab-link:hover {
+    color: var(--accent);
+  }
+
+  @media (min-width: 640px) {
+    .hero {
+      padding-top: 4rem;
+      padding-bottom: 5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      column-gap: 4rem;
+      align-items: end;
+      padding-top: 6rem;
+      padding-bottom: 6.5rem;
+    }
+
+    .side {
+      padding-bottom: 0.25rem;
+    }
+
+    .portrait-wrap {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .portrait {
+      width: 10rem;
+      height: 10rem;
+    }
+  }
+</style>

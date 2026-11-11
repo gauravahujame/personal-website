@@ -1,0 +1,36 @@
+---
+// Home automation: devices report to a hub, and the house stays quiet.
+---
+
+<svg class="diagram home" style="--vbw: 300" viewBox="0 0 300 100" role="img" aria-labelledby="home-title">
+  <title id="home-title">A house outline with a few sensors and lights connected to a hub.</title>
+  <path class="d-line" d="M40 54 L100 12 L160 54 V92 H40 Z"></path>
+  <rect class="d-node" x="88" y="64" width="24" height="28" rx="2"></rect>
+  <circle class="d-accent-soft hub" cx="100" cy="40" r="7" stroke-width="1.25"></circle>
+  <circle class="d-node" cx="62" cy="70" r="4"></circle>
+  <circle class="d-node" cx="138" cy="70" r="4"></circle>
+  <path class="d-line d-dash" d="M66 67 L94 44 M134 67 L106 44"></path>
+  <text x="182" y="40">
+    sensors → hub
+  </text>
+  <text x="182" y="56">
+    rules run quietly
+  </text>
+  <text x="182" y="72">
+    nobody notices
+  </text>
+</svg>
+
+<style>
+  .hub {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: breathe 3.6s var(--ease) infinite;
+  }
+
+  @keyframes breathe {
+    50% {
+      transform: scale(1.25);
+    }
+  }
+</style>

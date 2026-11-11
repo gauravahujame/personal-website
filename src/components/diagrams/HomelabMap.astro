@@ -1,0 +1,76 @@
+---
+// The homelab at the level of roles only: no hostnames, addresses or ports.
+const SERVICES = ['git + CI', 'automation', 'home', 'databases', 'apps'];
+const columnWidth = 92;
+const startX = 36;
+---
+
+<svg class="diagram homelab" style="--vbw: 560" viewBox="0 0 560 250" role="img" aria-labelledby="homelab-title">
+  <title id="homelab-title">
+    Homelab layers: traffic from the internet resolves through DNS, enters a reverse proxy that terminates TLS, and
+    reaches Docker containers for Git and CI, automation, home automation, databases and other apps. Monitoring watches
+    every layer.
+  </title>
+
+  <!-- Layers -->
+  <g class="layer" style="--i: 0">
+    <rect class="d-node d-dash" x="190" y="10" width="140" height="34" rx="17"></rect>
+    <text class="d-title" x="260" y="31" text-anchor="middle">
+      internet
+    </text>
+  </g>
+  <path class="d-line" d="M260 44 V62"></path>
+  <g class="layer" style="--i: 1">
+    <rect class="d-node" x="170" y="62" width="180" height="34" rx="8"></rect>
+    <text class="d-title" x="260" y="83" text-anchor="middle">
+      DNS · networking
+    </text>
+  </g>
+  <path class="d-line" d="M260 96 V114"></path>
+  <g class="layer" style="--i: 2">
+    <rect class="d-accent-soft" x="150" y="114" width="220" height="38" rx="8" stroke-width="1.25"></rect>
+    <text class="d-title" x="260" y="137" text-anchor="middle">
+      reverse proxy · TLS
+    </text>
+  </g>
+
+  <!-- Fan out to containers -->
+  {SERVICES.map((_, index) => {
+    const cx = startX + index * columnWidth + 40;
+    return <path class="d-line" d={`M260 152 C260 170 ${cx} 166 ${cx} 186`} />;
+  })}
+  <rect class="d-line d-dash" x="20" y="176" width="482" height="62" rx="12"></rect>
+  <text x="30" y="172">
+    docker
+  </text>
+  {SERVICES.map((service, index) => {
+    const x = startX + index * columnWidth;
+    return (
+      <g class="layer" style={`--i: ${index + 3}`}>
+        <rect class="d-node" x={x} y="186" width="80" height="40" rx="8" />
+        <text class="d-title" x={x + 40} y="210" text-anchor="middle">
+          {service}
+        </text>
+      </g>
+    );
+  })}
+
+  <!-- Monitoring rail -->
+  <path class="d-line d-accent monitor" d="M530 20 V236"></path>
+  <path class="d-line d-dash" d="M530 27 H334 M530 79 H354 M530 133 H374 M530 206 H506"></path>
+  <text x="540" y="128" transform="rotate(90 540 128)" text-anchor="middle">
+    monitoring
+  </text>
+</svg>
+
+<style>
+  .homelab .layer {
+    transition: transform 0.5s var(--ease);
+  }
+
+  /* The stack lifts slightly, layer by layer, on hover. */
+  :global(.lab-entry:hover) .homelab .layer {
+    transform: translateY(-2px);
+    transition-delay: calc(var(--i) * 35ms);
+  }
+</style>

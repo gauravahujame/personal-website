@@ -1,0 +1,55 @@
+---
+import { NOTES_URL, PERSON } from '../data/profile';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="page">
+  <p class="meta">
+    <span>
+      © {year} {PERSON.name}
+    </span>
+    <span aria-hidden="true">·</span>
+    <span>
+      {PERSON.location}, {PERSON.country}
+    </span>
+  </p>
+  <p class="meta links">
+    <a href={NOTES_URL}>The garden</a>
+    <a href="https://github.com/gauravahujame/personal-website">Source</a>
+    <a href="#main">Back to top ↑</a>
+  </p>
+</footer>
+
+<style>
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding-block: 2.5rem 3rem;
+    margin-top: 4rem;
+    /* Hairline that stays inside the page gutters. */
+    background: linear-gradient(var(--line-subtle), var(--line-subtle)) top center / calc(100% - 2 * var(--gutter)) 1px
+      no-repeat;
+  }
+
+  p {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 0;
+  }
+
+  p:first-child {
+    gap: 0.5rem;
+  }
+
+  a {
+    color: var(--ink-muted);
+  }
+
+  a:hover {
+    color: var(--accent);
+  }
+</style>

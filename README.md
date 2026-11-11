@@ -1,51 +1,66 @@
-# Gatsby Markdown Personal Website
+# gauravahuja.dev
 
-This is a personal website / blog using [Gatsby](https://www.gatsbyjs.org/), [Markdown](https://www.markdownguide.org/), [Styled Components](https://styled-components.com/), [Talwind CSS](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/) & [React Font Awesome](https://github.com/FortAwesome/react-fontawesome).
+Source for [www.gauravahuja.dev](https://www.gauravahuja.dev), a one-page personal site built with [Astro](https://astro.build) and plain CSS. It links to the notes at [notes.gauravahuja.dev](https://notes.gauravahuja.dev), a separate Quartz site that shares its design language.
 
-## Demo
+## Develop
 
-[Gatsby Markdown Personal Website](https://gatsby-markdown-personal-website.netlify.app/)
+Requires Node 22.12 or later (`.node-version` pins 24).
 
-## Quick start
+```sh
+npm install
+npm run dev      # http://localhost:4321
+npm run check    # type-check .astro and .ts files
+npm run build    # static output in dist/
+npm run preview  # serve dist/
+```
 
-1.  **Create a Gatsby site.**
+## Editing content
 
-    Use the Gatsby CLI to create a new site, using the Gatsby Markdown Personal Website starter.
+All copy lives in `src/data/`. Components only render it.
 
-    ```shell
-    gatsby new my-site-name https://github.com/SaimirKapaj/gatsby-markdown-personal-website
-    ```
+| File            | What it holds                                                                            |
+| --------------- | ---------------------------------------------------------------------------------------- |
+| `profile.ts`    | Name, role, location, email, social links, nav, the hero's "Currently exploring" list    |
+| `projects.ts`   | Selected Work: tagline, why, how it works, stack, status, links, illustration, card size |
+| `lab.ts`        | The Lab entries: summary, topics, status, illustration, size                             |
+| `experience.ts` | Capability summary, jobs, education. `outcomes` is an empty slot for verified numbers    |
+| `interests.ts`  | Beyond the Code                                                                          |
+| `writing.ts`    | Selected garden notes and the garden's sections                                          |
+| `status.ts`     | Status values: `completed`, `active`, `experimental`, `concept`                          |
 
-2.  **Develop**
+- **Add a project:** append to `PROJECTS`. Pick a `layout` (`feature` spans both columns with the diagram beside the text, `half` takes one column, `wide` spans both) and a `visual`.
+- **Add a Lab entry:** append to `LAB` with a `size` (`large`, `medium`, `small`). `visual` is optional.
+- **New illustration:** add an SVG component in `src/components/diagrams/`, add its key to the `visual` type, and register it in `diagrams/Visual.astro`.
+- **Statuses:** only set one when it's true. Leave `status` out and no badge renders.
+- **Notes:** the garden's RSS feed lists folders and tags rather than notes, so `writing.ts` is curated by hand. Check each URL resolves.
 
-    Navigate into your new site’s directory and start the development environment.
+## Structure
 
-    ```shell
-    gatsby develop
-    ```
+| Path                                            | Role                                                                            |
+| ----------------------------------------------- | ------------------------------------------------------------------------------- |
+| `src/pages/index.astro`                         | Composes the seven sections                                                     |
+| `src/components/sections/`                      | Hero, SelectedWork, Lab, Experience, Beyond, Garden, Contact                    |
+| `src/components/`                               | Header, Footer, ThemeToggle, SectionHeader, ProjectCard, StatusBadge, StackList |
+| `src/components/diagrams/`, `beyond/`           | Inline SVG illustrations, themed through CSS tokens                             |
+| `src/layouts/Base.astro`                        | Head, SEO and structured data, fonts, theme script, scroll reveals              |
+| `src/styles/global.css`                         | Design tokens and shared roles                                                  |
+| `src/pages/sitemap.xml.ts`, `public/robots.txt` | Sitemap and robots                                                              |
+| `public/og.png`                                 | 1200×630 social card                                                            |
 
-    Your site is now running at `http://localhost:8000`
+## Design
 
-3.  **Build**
+`src/styles/global.css` shares the notes site's type system, inks and accent (from `quartz/styles/custom.scss` and `.kiro/steering/ui-design-language.md` in the Quartz repo): P22 Mackinac Pro headings, light Bricolage Grotesque text and a single purple accent. This site adds:
 
-    Get an optimized production build for your site generating static HTML and JavaScript, CSS bundles.
+- Fragment Mono for technical metadata (stacks, dates, statuses, diagram labels).
+- A warm charcoal dark theme (`#1b1a18`) instead of near-black.
+- Surface tokens (`--surface`, `--well`), status colours and diagram tokens.
 
-    ```shell
-    gatsby build
-    ```
+Motion is limited to hover transitions, scroll reveals, a few looping diagram details and a cross-fade on theme switch. All of it turns off under `prefers-reduced-motion`. Content is visible without JavaScript.
 
-4.  **Serve**
+Light/dark mode uses the `saved-theme` attribute on `<html>` and the `theme` key in `localStorage`, like the notes site.
 
-    Starts a local server for testing your production site.
-
-    ```shell
-    gatsby serve
-    ```
-
-    Your production site is now running at `http://localhost:9000`
+Mackinac comes from the Adobe Fonts kit `pso3wdg`; the kit's allowed domains must include `gauravahuja.dev` and `localhost`.
 
 ## Deploy
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/SaimirKapaj/gatsby-markdown-personal-website)
-
-[![Deploy with ZEIT Now](https://zeit.co/button)](https://zeit.co/import/project?template=https://github.com/SaimirKapaj/gatsby-markdown-personal-website)
+Netlify builds from `netlify.toml` (`npm run build`, publishes `dist/`). Old `/resume` and `/contact` URLs redirect to sections of the home page, and `/blog/*` redirects to the notes site.

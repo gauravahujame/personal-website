@@ -1,0 +1,323 @@
+---
+import SectionHeader from '../SectionHeader.astro';
+import StackList from '../StackList.astro';
+import { CAPABILITIES, EDUCATION, JOBS } from '../../data/experience';
+import { yearsOfExperience } from '../../data/profile';
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function formatMonth(value: string): string {
+  const [year, month] = value.split('-').map(Number) as [number, number];
+  return `${MONTHS[month - 1]} ${year}`;
+}
+
+function duration(start: string, end?: string): string {
+  const [sy, sm] = start.split('-').map(Number) as [number, number];
+  const now = new Date();
+  const [ey, em] = end ? (end.split('-').map(Number) as [number, number]) : [now.getFullYear(), now.getMonth() + 1];
+  const months = (ey - sy) * 12 + (em - sm);
+  const years = Math.floor(months / 12);
+  const rest = months % 12;
+  const parts = [years > 0 ? `${years} yr${years > 1 ? 's' : ''}` : '', rest > 0 ? `${rest} mo` : ''];
+  return parts.filter(Boolean).join(' ');
+}
+
+const years = yearsOfExperience();
+---
+
+<section id="experience" class="page section" aria-labelledby="experience-title">
+  <SectionHeader
+    index="03"
+    kicker="experience"
+    id="experience-title"
+    title="Professional experience"
+    subtitle={`${years}+ years, three companies, from enterprise Java to leading mobile teams.`}
+  />
+
+  <ul class="capabilities" aria-label="What the work adds up to">
+    {CAPABILITIES.map((capability) => (
+      <li data-reveal>
+        <h3 class="cap-title">{capability.title}</h3>
+        <p class="small">{capability.body}</p>
+      </li>
+    ))}
+  </ul>
+
+  <ol class="timeline" aria-label="Roles, most recent first">
+    {JOBS.map((job) => (
+      <li class:list={['job', { current: !job.end }]} data-reveal>
+        <div class="when">
+          <p class="meta dates">
+            <time datetime={job.start}>{formatMonth(job.start)}</time>
+            {' – '}
+            {job.end ? <time datetime={job.end}>{formatMonth(job.end)}</time> : <span>Present</span>}
+          </p>
+          <p class="meta length">{duration(job.start, job.end)}</p>
+        </div>
+        <span class="marker" aria-hidden="true" />
+        <div class="what">
+          <h3>
+            {job.roles.at(-1)}
+            <span class="company">{job.company}</span>
+          </h3>
+          {job.roles.length > 1 && (
+            <p class="meta progression" aria-label="Role progression">
+              {job.roles.map((role, index) => (
+                <>
+                  {index > 0 && <span aria-hidden="true"> → </span>}
+                  <span>{role}</span>
+                </>
+              ))}
+            </p>
+          )}
+          <p>{job.summary}</p>
+          <ul class="highlights small">
+            {job.highlights.map((highlight) => (
+              <li>{highlight}</li>
+            ))}
+          </ul>
+          {job.outcomes.length > 0 && (
+            <ul class="highlights small">
+              {job.outcomes.map((outcome) => (
+                <li>{outcome}</li>
+              ))}
+            </ul>
+          )}
+          <StackList items={job.stack} label={`Technologies at ${job.company}`} />
+        </div>
+      </li>
+    ))}
+  </ol>
+
+  <div class="education" data-reveal>
+    <h3 class="label">Education</h3>
+    <ul>
+      {EDUCATION.map((item) => (
+        <li>
+          <span class="meta">
+            {item.start}–{item.end}
+          </span>
+          <span>
+            <strong>{item.degree}</strong>
+            <span class="school">, {item.school}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* ── Capabilities ── */
+  .capabilities {
+    list-style: none;
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .capabilities li {
+    padding-top: 1rem;
+    border-top: 2px solid var(--accent);
+  }
+
+  .cap-title {
+    font-size: 1.28125rem;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .capabilities p {
+    margin: 0;
+  }
+
+  @media (min-width: 640px) {
+    .capabilities {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2rem;
+    }
+  }
+
+  /* ── Timeline ── */
+  .timeline {
+    list-style: none;
+    position: relative;
+  }
+
+  .job {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.25rem 1fr;
+    grid-template-areas:
+      'marker when'
+      'marker what';
+    column-gap: 1rem;
+    padding-bottom: 2.75rem;
+  }
+
+  /* Vertical rail */
+  .job::before {
+    content: '';
+    position: absolute;
+    left: calc(0.625rem - 0.5px);
+    top: 0.9rem;
+    bottom: 0;
+    border-left: 1px solid var(--line);
+  }
+
+  .job:last-child::before {
+    display: none;
+  }
+
+  .marker {
+    grid-area: marker;
+    justify-self: center;
+    width: 11px;
+    height: 11px;
+    margin-top: 0.4rem;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--accent);
+    background: var(--bg);
+    position: relative;
+    z-index: 1;
+  }
+
+  .current .marker {
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-fill);
+  }
+
+  .when {
+    grid-area: when;
+    margin-bottom: 0.5rem;
+  }
+
+  .when p {
+    margin: 0;
+  }
+
+  .dates {
+    color: var(--ink);
+  }
+
+  .what {
+    grid-area: what;
+    min-width: 0;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 0.35rem;
+  }
+
+  .company {
+    display: block;
+    font-size: 1.125rem;
+    font-style: italic;
+    color: var(--ink-muted);
+  }
+
+  .progression {
+    margin: 0.25rem 0 0.75rem;
+  }
+
+  .what > p {
+    margin: 0.75rem 0;
+    max-width: 40rem;
+  }
+
+  .highlights {
+    list-style: none;
+    margin-bottom: 0.9rem;
+    max-width: 40rem;
+  }
+
+  .highlights li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-top: 0.3rem;
+  }
+
+  .highlights li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  @media (min-width: 1024px) {
+    .job {
+      grid-template-columns: 14rem 1.25rem 1fr;
+      grid-template-areas: 'when marker what';
+      column-gap: 2rem;
+      padding-bottom: 3.5rem;
+    }
+
+    .job::before {
+      left: calc(14rem + 2rem + 0.625rem - 0.5px);
+    }
+
+    .when {
+      text-align: right;
+      padding-top: 0.2rem;
+    }
+
+    h3 {
+      font-size: 1.875rem;
+    }
+
+    .company {
+      display: inline;
+      font-size: inherit;
+      margin-left: 0.35em;
+    }
+  }
+
+  /* ── Education ── */
+  .education {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    border-radius: var(--radius-card);
+    background: var(--well);
+    border: 1px solid var(--line-subtle);
+  }
+
+  .education h3 {
+    font-family: var(--bodyFont);
+    letter-spacing: 0.05em;
+    color: var(--ink-muted);
+    font-size: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .education ul {
+    list-style: none;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .education li {
+    display: grid;
+    gap: 0.1rem;
+    font-size: 1rem;
+  }
+
+  .school {
+    color: var(--ink-muted);
+  }
+
+  @media (min-width: 640px) {
+    .education ul {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .education {
+      margin-left: calc(14rem + 2rem + 1.25rem + 2rem);
+    }
+  }
+</style>

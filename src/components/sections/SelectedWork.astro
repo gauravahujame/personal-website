@@ -1,0 +1,53 @@
+---
+import SectionHeader from '../SectionHeader.astro';
+import ProjectCard from '../ProjectCard.astro';
+import { PROJECTS } from '../../data/projects';
+import { GITHUB_URL } from '../../data/profile';
+---
+
+<section id="work" class="page section" aria-labelledby="work-title">
+  <SectionHeader
+    index="01"
+    kicker="selected work"
+    id="work-title"
+    title="Selected work"
+    subtitle="Tools I built because I wanted them to exist. Each one started with a specific problem."
+  />
+
+  <div class="grid">
+    {PROJECTS.map((project, index) => (
+      <ProjectCard project={project} index={index} />
+    ))}
+  </div>
+
+  <p class="more meta">
+    More experiments and forks live on{' '}
+    <a class="ext" href={GITHUB_URL}>
+      GitHub
+    </a>
+    .
+  </p>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 1024px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .grid > :global(.project--feature),
+    .grid > :global(.project--wide) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .more {
+    margin: 1.5rem 0 0;
+  }
+</style>

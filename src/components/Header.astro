@@ -1,0 +1,176 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { NAV_ITEMS, PERSON } from '../data/profile';
+---
+
+<header class="site-header">
+  <div class="page bar">
+    <a class="name" href="/" aria-label={`${PERSON.name}, home`}>
+      {PERSON.name}
+    </a>
+    <nav aria-label="Sections">
+      <ul>
+        {NAV_ITEMS.map((item) => (
+          <li>
+            <a class="ui" href={`/#${item.target}`} data-nav={item.target}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <ThemeToggle />
+  </div>
+</header>
+
+<script>
+  // Mark the nav item for the section in view.
+  const links = new Map<string, HTMLAnchorElement>();
+  document.querySelectorAll<HTMLAnchorElement>('[data-nav]').forEach((link) => {
+    links.set(link.dataset.nav ?? '', link);
+  });
+
+  const sections = [...links.keys()]
+    .map((id) => document.getElementById(id))
+    .filter((section): section is HTMLElement => section !== null);
+
+  if (sections.length > 0 && 'IntersectionObserver' in window) {
+    const visible = new Set<string>();
+    const update = (): void => {
+      // The first section (in page order) that is in the reading band wins.
+      const current = sections.find((section) => visible.has(section.id))?.id;
+      links.forEach((link, id) => {
+        if (id === current) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
+        }
+        update();
+      },
+      { rootMargin: '-35% 0px -60% 0px' }
+    );
+    sections.forEach((section) => observer.observe(section));
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--header-bg);
+    backdrop-filter: blur(var(--blur)) saturate(1.2);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(1.2);
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  /* Phones: name and toggle on the first row, nav on the second. */
+  .bar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'name toggle'
+      'nav nav';
+    align-items: center;
+    row-gap: 0.35rem;
+    padding-block: 0.75rem 0.5rem;
+  }
+
+  .name {
+    grid-area: name;
+    font-family: var(--mackinac);
+    font-weight: 500;
+    font-size: 1.28125rem;
+    letter-spacing: -0.025em;
+    word-spacing: 0.025em;
+    line-height: 1.25;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  nav {
+    grid-area: nav;
+    margin-inline: -0.6rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  ul {
+    list-style: none;
+    display: flex;
+    gap: 0.1rem;
+  }
+
+  nav a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0 0.6rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.90625rem; /* 14.5px */
+    color: var(--ink-muted);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  nav a:hover {
+    color: var(--ink);
+    background: var(--hover-fill);
+  }
+
+  nav a[aria-current] {
+    color: var(--ink);
+  }
+
+  /* Small accent dot under the current section. */
+  nav a::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0.3rem;
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    opacity: 0;
+    transform: scale(0.4);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s var(--ease);
+  }
+
+  nav a[aria-current]::after {
+    opacity: 1;
+    transform: none;
+  }
+
+  .bar > :global(.theme-toggle) {
+    grid-area: toggle;
+  }
+
+  @media (min-width: 640px) {
+    .bar {
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: 'name nav toggle';
+      column-gap: 1.5rem;
+      height: var(--header-height);
+      padding-block: 0;
+    }
+
+    nav {
+      justify-self: end;
+      margin-inline: 0;
+    }
+  }
+</style>

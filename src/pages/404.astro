@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+import { NOTES_URL, PERSON } from '../data/profile';
+---
+
+<Base title={`Page not found · ${PERSON.name}`} noindex>
+  <section class="page not-found" aria-labelledby="nf-title">
+    <p class="meta">404</p>
+    <h1 id="nf-title">This page doesn’t exist.</h1>
+    <p>It may have moved, or the link may be wrong. Old blog posts now live in the garden.</p>
+    <div class="actions">
+      <a class="pill" href="/">
+        Go home
+      </a>
+      <a class="pill pill--quiet" href={NOTES_URL}>
+        Read the garden
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .not-found {
+    padding-block: 6rem 4rem;
+  }
+
+  .meta {
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+
+  h1 {
+    font-size: clamp(2.25rem, 1.5rem + 3vw, 3.5rem);
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+</style>

@@ -1,0 +1,99 @@
+---
+// zx: the ~/.zx workspace, with notes on what the README says each folder does.
+const TREE: { name: string; note?: string; accent?: boolean }[] = [
+  { name: 'jobs/', note: 'scheduled from their own comments', accent: true },
+  { name: 'api/', note: 'files become REST endpoints', accent: true },
+  { name: 'sites/', note: 'static pages, same server' },
+  { name: 'agents/', note: 'skills that return JSON' },
+  { name: 'bin/' },
+  { name: 'notes/' },
+  { name: 'playground/' }
+];
+---
+
+<figure class="tree">
+  <p class="root meta">
+    <span class="accent">~/.zx</span> <span class="hint">· a git repo</span>
+  </p>
+  <ul class="meta" aria-label="Folders in the zx workspace">
+    {TREE.map((item) => (
+      <li class:list={{ accent: item.accent }}>
+        <span class="name">{item.name}</span>
+        {item.note && <span class="note">{item.note}</span>}
+      </li>
+    ))}
+  </ul>
+  <p class="meta daemon">
+    <span class="pulse" aria-hidden="true"></span> launchd agent runs the scheduler at login
+  </p>
+</figure>
+
+<style>
+  .tree {
+    margin: 0;
+    padding: 1.1rem 1.25rem;
+    background: var(--well);
+    border-radius: var(--radius-media);
+    border: 1px solid var(--line-subtle);
+  }
+
+  .root {
+    margin: 0 0 0.35rem;
+    color: var(--ink);
+  }
+
+  .hint {
+    color: var(--ink-muted);
+  }
+
+  ul {
+    list-style: none;
+    border-left: 1px solid var(--line);
+    margin-left: 0.35rem;
+  }
+
+  li {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.75rem;
+    padding: 0.1rem 0 0.1rem 1rem;
+  }
+
+  li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.85em;
+    width: 0.65rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .name {
+    color: var(--ink);
+    min-width: 6.5rem;
+  }
+
+  .accent .name,
+  .accent {
+    color: var(--accent);
+  }
+
+  .note {
+    color: var(--ink-muted);
+  }
+
+  .daemon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.75rem 0 0;
+  }
+
+  .pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background: var(--status-active);
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/sections/Hero.astro';
+import SelectedWork from '../components/sections/SelectedWork.astro';
+import Lab from '../components/sections/Lab.astro';
+import Experience from '../components/sections/Experience.astro';
+import Beyond from '../components/sections/Beyond.astro';
+import Garden from '../components/sections/Garden.astro';
+import Contact from '../components/sections/Contact.astro';
+import { PERSON } from '../data/profile';
+---
+
+<Base title={`${PERSON.name} · Software engineer in ${PERSON.location}`} structuredData>
+  <Hero />
+  <SelectedWork />
+  <Lab />
+  <Experience />
+  <Beyond />
+  <Garden />
+  <Contact />
+</Base>
+
+<style is:global>
+  /* Vertical rhythm between sections. */
+  .section {
+    padding-block: 4rem;
+  }
+
+  @media (min-width: 640px) {
+    .section {
+      padding-block: 5.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .section {
+      padding-block: 5.5rem;
+    }
+  }
+</style>

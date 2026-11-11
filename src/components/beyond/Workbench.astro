@@ -1,0 +1,47 @@
+---
+// A trigger → rule → action chain: how most small automations are shaped.
+const STEPS = [
+  { label: 'annoyance', x: 10 },
+  { label: 'script', x: 100 },
+  { label: 'service', x: 190 }
+];
+---
+
+<svg class="diagram bench" style="--vbw: 280" viewBox="0 0 280 120" role="img" aria-labelledby="bench-title">
+  <title id="bench-title">A chain from an everyday annoyance to a script to a self-hosted service.</title>
+  {STEPS.map((step, i) => (
+    <g class="step" style={`--i: ${i}`}>
+      <rect
+        class:list={[i === 2 ? 'd-accent-soft' : 'd-node']}
+        x={step.x}
+        y="40"
+        width="80"
+        height="40"
+        rx="20"
+        stroke-width="1.25"
+      />
+      <text class="d-title" x={step.x + 40} y="64" text-anchor="middle">
+        {step.label}
+      </text>
+    </g>
+  ))}
+  <path class="d-line" d="M90 60 H100 M180 60 H190"></path>
+  <path class="d-line d-dash loop" d="M230 80 C230 108 50 108 50 80"></path>
+  <text x="140" y="114" text-anchor="middle">
+    and repeat
+  </text>
+  <text x="140" y="26" text-anchor="middle">
+    most side projects start here
+  </text>
+</svg>
+
+<style>
+  .step {
+    transition: transform 0.4s var(--ease);
+  }
+
+  :global(.interest:hover) .step {
+    transform: translateY(-3px);
+    transition-delay: calc(var(--i) * 80ms);
+  }
+</style>

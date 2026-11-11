@@ -1,0 +1,88 @@
+---
+// Local inference on Apple silicon: quantized weights in unified memory, run on the GPU through MLX.
+---
+
+<svg class="diagram inference" style="--vbw: 300" viewBox="0 0 300 200" role="img" aria-labelledby="inf-title">
+  <title id="inf-title">
+    A prompt is tokenized, then run through quantized model weights held in Apple silicon's unified memory and executed
+    on the GPU with MLX, producing a stream of tokens.
+  </title>
+
+  <rect class="d-node" x="8" y="20" width="76" height="30" rx="15"></rect>
+  <text class="d-title" x="46" y="39" text-anchor="middle">
+    prompt
+  </text>
+  <path class="d-line" d="M84 35 H112"></path>
+  <rect class="d-node" x="112" y="20" width="80" height="30" rx="8"></rect>
+  <text class="d-title" x="152" y="39" text-anchor="middle">
+    tokenize
+  </text>
+  <path class="d-line" d="M192 35 H216 V64"></path>
+
+  <!-- Unified memory chip -->
+  <rect class="d-line d-dash" x="8" y="64" width="284" height="84" rx="12"></rect>
+  <text x="18" y="80">
+    unified memory
+  </text>
+  <g class="weights">
+    {Array.from({ length: 16 }, (_, i) => (
+      <rect
+        class="d-accent-soft cell"
+        x={18 + (i % 8) * 18}
+        y={88 + Math.floor(i / 8) * 18}
+        width="14"
+        height="14"
+        rx="3"
+        stroke-width="1"
+        style={`--i: ${i}`}
+      />
+    ))}
+  </g>
+  <text x="18" y="140">
+    quantized weights
+  </text>
+  <rect class="d-node" x="186" y="90" width="94" height="44" rx="8"></rect>
+  <text class="d-title" x="233" y="109" text-anchor="middle">
+    GPU · MLX
+  </text>
+  <text x="233" y="124" text-anchor="middle">
+    Metal
+  </text>
+  <path class="d-line" d="M164 112 H186"></path>
+
+  <!-- Token stream -->
+  <path class="d-line" d="M233 148 V172 H120"></path>
+  <g class="tokens">
+    <rect class="d-accent-fill tok" x="96" y="167" width="16" height="10" rx="3" style="--i: 0"></rect>
+    <rect class="d-accent-fill tok" x="74" y="167" width="16" height="10" rx="3" style="--i: 1"></rect>
+    <rect class="d-accent-fill tok" x="52" y="167" width="16" height="10" rx="3" style="--i: 2"></rect>
+  </g>
+  <text x="8" y="176">
+    tokens
+  </text>
+</svg>
+
+<style>
+  .tok {
+    animation: stream 1.8s var(--ease) infinite;
+    animation-delay: calc(var(--i) * 0.2s);
+  }
+
+  @keyframes stream {
+    0%,
+    100% {
+      opacity: 0.25;
+    }
+    40% {
+      opacity: 1;
+    }
+  }
+
+  .cell {
+    transition: fill 0.3s ease;
+  }
+
+  :global(.lab-entry:hover) .cell:nth-child(3n) {
+    fill: var(--accent);
+  }
+</style>

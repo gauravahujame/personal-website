@@ -1,0 +1,119 @@
+---
+import SectionHeader from '../SectionHeader.astro';
+import PianoKeys from '../beyond/PianoKeys.astro';
+import CircuitBoard from '../beyond/CircuitBoard.astro';
+import Workbench from '../beyond/Workbench.astro';
+import { INTERESTS, type InterestVisual } from '../../data/interests';
+
+const VISUALS: Record<InterestVisual, typeof PianoKeys> = {
+  piano: PianoKeys,
+  board: CircuitBoard,
+  workbench: Workbench
+};
+---
+
+<section id="beyond" class="page section" aria-labelledby="beyond-title">
+  <SectionHeader
+    index="04"
+    kicker="beyond the code"
+    id="beyond-title"
+    title="Beyond the code"
+    subtitle="Because curiosity doesn’t stop at the terminal."
+  />
+
+  <div class="interests">
+    {INTERESTS.map((interest, index) => {
+      const Visual = VISUALS[interest.visual];
+      return (
+        <article class="interest" aria-labelledby={`interest-${interest.id}`} data-reveal>
+          <div class="art diagram-frame" style={`--i: ${index}`}>
+            <Visual />
+          </div>
+          <h3 id={`interest-${interest.id}`}>{interest.title}</h3>
+          <p>{interest.body}</p>
+          <p class="meta aside">{interest.aside}</p>
+          {interest.link && (
+            <a class="ui link" href={interest.link.href}>
+              {interest.link.label} →
+            </a>
+          )}
+        </article>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .interests {
+    display: grid;
+    gap: 3rem;
+  }
+
+  .interest {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .art {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius-card);
+    background: var(--well);
+    border: 1px solid var(--line-subtle);
+    transition: border-color 0.3s ease;
+  }
+
+  .interest:hover .art {
+    border-color: var(--line);
+  }
+
+  /* Personal register: italic serif titles. */
+  h3 {
+    font-size: 1.75rem;
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    margin: 0 0 0.75rem;
+  }
+
+  .aside {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  .link {
+    font-size: 1rem;
+    margin-top: 0.25rem;
+    align-self: flex-start;
+  }
+
+  @media (min-width: 768px) {
+    .interests {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2rem;
+    }
+
+    /* A gentle stagger gives the row an editorial rhythm. */
+    .interest:nth-child(2) {
+      margin-top: 3rem;
+    }
+
+    .interest:nth-child(3) {
+      margin-top: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .interests {
+      gap: 3rem;
+    }
+
+    h3 {
+      font-size: 2rem;
+    }
+  }
+</style>

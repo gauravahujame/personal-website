@@ -1,0 +1,84 @@
+---
+// Exploded view of the pocket assistant prototype: board, microphone, display, battery.
+---
+
+<svg class="diagram pocket" style="--vbw: 520" viewBox="0 0 520 220" role="img" aria-labelledby="pocket-title">
+  <title id="pocket-title">
+    A sketch of the pocket assistant: an ESP32-S3 board with a microphone, a small display and a battery, connected to an
+    AI assistant. A work in progress.
+  </title>
+
+  <!-- Enclosure -->
+  <rect class="d-line d-dash" x="150" y="18" width="190" height="184" rx="28"></rect>
+
+  <!-- Display -->
+  <rect class="d-node" x="176" y="36" width="138" height="62" rx="8"></rect>
+  <path class="d-line d-accent wave" d="M192 67 q6 -14 12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0"></path>
+
+  <!-- ESP32-S3 module -->
+  <rect class="d-accent-soft" x="196" y="112" width="98" height="46" rx="6" stroke-width="1.25"></rect>
+  <text class="d-title" x="245" y="139" text-anchor="middle">
+    ESP32-S3
+  </text>
+  {Array.from({ length: 7 }, (_, i) => (
+    <path class="d-line" d={`M${204 + i * 13} 158 v6 M${204 + i * 13} 112 v-6`} />
+  ))}
+
+  <!-- Mic -->
+  <circle class="d-node" cx="245" cy="182" r="8"></circle>
+  <path class="d-line" d="M241 182 h8 M245 178 v8"></path>
+
+  <!-- Battery (behind) -->
+  <rect class="d-node" x="356" y="132" width="44" height="64" rx="6"></rect>
+  <rect class="d-node" x="371" y="126" width="14" height="6" rx="2"></rect>
+  <rect class="d-fill charge" x="362" y="168" width="32" height="22" rx="3"></rect>
+  <path class="d-line d-dash" d="M340 164 H356"></path>
+
+  <!-- Annotations -->
+  <path class="d-line" d="M176 52 H120"></path>
+  <text x="112" y="56" text-anchor="end">
+    display
+  </text>
+  <path class="d-line" d="M196 135 H120"></path>
+  <text x="112" y="139" text-anchor="end">
+    board
+  </text>
+  <path class="d-line" d="M237 182 H120"></path>
+  <text x="112" y="186" text-anchor="end">
+    microphone
+  </text>
+  <text x="378" y="214" text-anchor="middle">
+    battery
+  </text>
+
+  <!-- Link to the assistant -->
+  <path class="d-line d-dash d-accent" d="M340 60 C390 60 400 60 430 60"></path>
+  <rect class="d-node" x="430" y="40" width="82" height="40" rx="20"></rect>
+  <text class="d-title" x="471" y="58" text-anchor="middle">
+    assistant
+  </text>
+  <text x="471" y="72" text-anchor="middle">
+    AI
+  </text>
+</svg>
+
+<style>
+  .wave {
+    stroke-dasharray: 160;
+    animation: listen 3.2s var(--ease) infinite;
+  }
+
+  @keyframes listen {
+    0% {
+      stroke-dashoffset: 160;
+    }
+    55%,
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .charge {
+    opacity: 0.55;
+  }
+</style>

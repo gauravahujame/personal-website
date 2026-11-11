@@ -1,0 +1,36 @@
+---
+// Maps the `visual` keys in src/data to their illustration. Add new diagrams here.
+import type { ProjectVisual } from '../../data/projects';
+import type { LabVisual } from '../../data/lab';
+import GatewayRouter from './GatewayRouter.astro';
+import TvReader from './TvReader.astro';
+import ZxWorkspace from './ZxWorkspace.astro';
+import GardenGraph from './GardenGraph.astro';
+import HomelabMap from './HomelabMap.astro';
+import AgentLoop from './AgentLoop.astro';
+import InferencePipeline from './InferencePipeline.astro';
+import PocketAssistant from './PocketAssistant.astro';
+import MusicRoll from './MusicRoll.astro';
+import HomeQuiet from './HomeQuiet.astro';
+
+interface Props {
+  name: ProjectVisual | LabVisual;
+}
+
+const COMPONENTS = {
+  gateway: GatewayRouter,
+  'tv-reader': TvReader,
+  'zx-workspace': ZxWorkspace,
+  'garden-graph': GardenGraph,
+  homelab: HomelabMap,
+  'agent-loop': AgentLoop,
+  inference: InferencePipeline,
+  'pocket-assistant': PocketAssistant,
+  'music-roll': MusicRoll,
+  home: HomeQuiet
+} as const;
+
+const Component = COMPONENTS[Astro.props.name];
+---
+
+<Component />

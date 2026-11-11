@@ -1,0 +1,64 @@
+---
+// One octave of keys. A C major triad (C, E, G) is lit; hovering the card plays it as a ripple.
+const WHITE = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+const BLACK = [0, 1, 3, 4, 5]; // after C, D, F, G, A
+const CHORD = new Set(['C', 'E', 'G']);
+---
+
+<svg class="diagram piano" style="--vbw: 280" viewBox="0 0 280 120" role="img" aria-labelledby="piano-title">
+  <title id="piano-title">One octave of piano keys with a C major chord highlighted.</title>
+  {WHITE.map((note, i) => (
+    <rect
+      class:list={['white', { lit: CHORD.has(note) }]}
+      x={i * 40}
+      y="0"
+      width="38"
+      height="118"
+      rx="4"
+      style={`--i: ${i}`}
+    />
+  ))}
+  {BLACK.map((after) => (
+    <rect class="black" x={after * 40 + 27} y="0" width="24" height="72" rx="3" />
+  ))}
+  {WHITE.map((note, i) => (
+    <text x={i * 40 + 19} y="108" text-anchor="middle">
+      {note}
+    </text>
+  ))}
+</svg>
+
+<style>
+  .white {
+    fill: var(--key-white);
+    stroke: var(--diagram-stroke);
+    stroke-width: 1;
+    transition: fill 0.35s ease;
+  }
+
+  /* Lit keys: accent mixed into the key colour, so it works on both key tones. */
+  .white.lit {
+    fill: var(--key-lit);
+    stroke: var(--accent);
+  }
+
+  .black {
+    fill: var(--key-black);
+  }
+
+  .piano text {
+    fill: var(--key-black);
+    opacity: 0.6;
+  }
+
+  :global(.interest:hover) .white.lit {
+    animation: strike 0.9s var(--ease);
+    animation-delay: calc(var(--i) * 70ms);
+  }
+
+  @keyframes strike {
+    40% {
+      fill: var(--accent);
+    }
+  }
+</style>

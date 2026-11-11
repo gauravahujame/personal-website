@@ -1,0 +1,205 @@
+---
+// Interactive routing diagram for MLX Gateway. The routes mirror the README:
+// small models → M1, large models → M2, local nodes down → LiteLLM cloud.
+const ROUTES = [
+  { id: 'm1', label: '7B model', caption: 'Small models go to the M1, the least busy healthy node for them.' },
+  { id: 'm2', label: '70B model', caption: 'Large models go to the M2, which has the memory for them.' },
+  { id: 'cloud', label: 'Local nodes down', caption: 'With no healthy local node, the request fails over to LiteLLM.' }
+] as const;
+---
+
+<figure class="gateway" data-active="m1">
+  <svg
+    class="diagram"
+    style="--vbw: 520"
+    viewBox="0 0 520 250"
+    role="img"
+    aria-labelledby="gw-title gw-desc"
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <title id="gw-title">MLX Gateway routing</title>
+    <desc id="gw-desc">
+      Apps send OpenAI-compatible requests to the gateway, which routes small models to an M1 Mac, large models to an M2
+      Mac, and falls back to LiteLLM cloud providers when local nodes are unavailable.
+    </desc>
+
+    <!-- Edges -->
+    <path class="d-line edge edge-in" d="M120 125 H190"></path>
+    <path class="d-line edge" data-route="m1" d="M310 112 C350 112 350 52 392 52"></path>
+    <path class="d-line edge" data-route="m2" d="M310 125 H392"></path>
+    <path class="d-line edge d-dash" data-route="cloud" d="M310 138 C350 138 350 200 392 200"></path>
+
+    <!-- Apps -->
+    <rect class="d-node" x="16" y="100" width="104" height="50" rx="10"></rect>
+    <text class="d-title" x="68" y="122" text-anchor="middle">
+      your apps
+    </text>
+    <text x="68" y="138" text-anchor="middle">
+      /v1/chat
+    </text>
+
+    <!-- Gateway -->
+    <rect class="d-accent-soft" x="190" y="88" width="120" height="74" rx="12" stroke-width="1.25"></rect>
+    <text class="d-title" x="250" y="114" text-anchor="middle">
+      gateway
+    </text>
+    <text x="250" y="131" text-anchor="middle">
+      health · load
+    </text>
+    <text x="250" y="146" text-anchor="middle">
+      latency
+    </text>
+
+    <!-- Targets -->
+    <g class="target" data-route="m1">
+      <rect class="d-node" x="392" y="28" width="112" height="48" rx="10"></rect>
+      <text class="d-title" x="448" y="49" text-anchor="middle">
+        M1 · MLX
+      </text>
+      <text x="448" y="65" text-anchor="middle">
+        7B, mini
+      </text>
+    </g>
+    <g class="target" data-route="m2">
+      <rect class="d-node" x="392" y="101" width="112" height="48" rx="10"></rect>
+      <text class="d-title" x="448" y="122" text-anchor="middle">
+        M2 · MLX
+      </text>
+      <text x="448" y="138" text-anchor="middle">
+        14B, 70B
+      </text>
+    </g>
+    <g class="target" data-route="cloud">
+      <rect class="d-node d-dash" x="392" y="176" width="112" height="48" rx="10"></rect>
+      <text class="d-title" x="448" y="197" text-anchor="middle">
+        LiteLLM
+      </text>
+      <text x="448" y="213" text-anchor="middle">
+        cloud
+      </text>
+    </g>
+  </svg>
+
+  <figcaption>
+    <div class="controls" role="group" aria-label="Simulate a request">
+      <span class="meta">Route a request:</span>
+      {ROUTES.map((route, index) => (
+        <button
+          type="button"
+          class="route-btn meta"
+          data-route-btn={route.id}
+          data-caption={route.caption}
+          aria-pressed={index === 0 ? 'true' : 'false'}
+        >
+          {route.label}
+        </button>
+      ))}
+    </div>
+    <p class="caption meta" aria-live="polite">
+      {ROUTES[0].caption}
+    </p>
+  </figcaption>
+</figure>
+
+<script>
+  for (const figure of document.querySelectorAll<HTMLElement>('.gateway')) {
+    const caption = figure.querySelector<HTMLElement>('.caption');
+    const buttons = figure.querySelectorAll<HTMLButtonElement>('[data-route-btn]');
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        figure.dataset.active = button.dataset.routeBtn ?? 'm1';
+        buttons.forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+        if (caption) caption.textContent = button.dataset.caption ?? '';
+      });
+    });
+  }
+</script>
+
+<style>
+  .gateway {
+    margin: 0;
+  }
+
+  .edge,
+  .target rect {
+    transition:
+      stroke 0.3s ease,
+      opacity 0.3s ease;
+  }
+
+  /* Inactive routes recede; the active one takes the accent and flows. */
+  .gateway [data-route] {
+    opacity: 0.45;
+  }
+
+  .gateway[data-active='m1'] [data-route='m1'],
+  .gateway[data-active='m2'] [data-route='m2'],
+  .gateway[data-active='cloud'] [data-route='cloud'] {
+    opacity: 1;
+  }
+
+  .gateway[data-active='m1'] path[data-route='m1'],
+  .gateway[data-active='m2'] path[data-route='m2'],
+  .gateway[data-active='cloud'] path[data-route='cloud'],
+  .edge-in {
+    stroke: var(--accent);
+    stroke-dasharray: 5 5;
+    animation: flow 1.2s linear infinite;
+  }
+
+  .gateway[data-active='m1'] [data-route='m1'] rect,
+  .gateway[data-active='m2'] [data-route='m2'] rect,
+  .gateway[data-active='cloud'] [data-route='cloud'] rect {
+    stroke: var(--accent);
+  }
+
+  @keyframes flow {
+    to {
+      stroke-dashoffset: -20;
+    }
+  }
+
+  figcaption {
+    margin-top: 1rem;
+  }
+
+  .controls {
+    display: none;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  :global(.js) .controls {
+    display: flex;
+  }
+
+  .route-btn {
+    min-height: 2.25rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .route-btn:hover {
+    background: var(--hover-fill);
+  }
+
+  .route-btn[aria-pressed='true'] {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    background: var(--accent-fill);
+  }
+
+  .caption {
+    margin: 0.75rem 0 0;
+    min-height: 1.2rem;
+  }
+</style>

@@ -1,0 +1,201 @@
+---
+import SectionHeader from '../SectionHeader.astro';
+import { ARTICLES, GARDEN_SECTIONS } from '../../data/writing';
+import { NOTES_URL } from '../../data/profile';
+
+const STAGE_GLYPH = { seedling: '🌱', budding: '🌿', evergreen: '🌳' } as const;
+
+function formatDate(value: string): string {
+  return new Date(value).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+---
+
+<section id="writing" class="page section" aria-labelledby="writing-title">
+  <SectionHeader
+    index="05"
+    kicker="writing"
+    id="writing-title"
+    title="From the garden"
+    subtitle="Notes, experiments, and ideas that grow over time."
+  />
+
+  <div class="layout">
+    <ol class="articles" aria-label="Selected notes">
+      {ARTICLES.map((article) => (
+        <li data-reveal>
+          <a href={article.href} class="article">
+            <span class="meta topline">
+              <span>{article.topic}</span>
+              <span class="stage">
+                <span aria-hidden="true">{STAGE_GLYPH[article.stage]}</span> {article.stage}
+              </span>
+              {article.date && <time datetime={article.date}>{formatDate(article.date)}</time>}
+            </span>
+            <span class="title">{article.title}</span>
+            <span class="excerpt">{article.excerpt}</span>
+            <span class="go" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        </li>
+      ))}
+    </ol>
+
+    <aside class="garden card" aria-label="About the garden" data-reveal>
+      <p class="label">The garden</p>
+      <p class="pitch">
+        A blog asks for finished thoughts. The garden lets notes start rough and get better, linked to each other as
+        they grow.
+      </p>
+      <ul class="sections">
+        {GARDEN_SECTIONS.map((section) => (
+          <li>
+            <a href={section.href}>
+              <span class="ui">{section.title}</span>
+              <span class="meta">{section.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a class="pill" href={NOTES_URL}>
+        Enter the garden{' '}
+        <span class="arrow" aria-hidden="true">
+          →
+        </span>
+      </a>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .articles {
+    list-style: none;
+  }
+
+  .articles li {
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  .articles li:last-child {
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .article {
+    position: relative;
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.4rem 2.5rem 1.4rem 0;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .topline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+  }
+
+  .stage {
+    color: var(--ink-muted);
+  }
+
+  .title {
+    font-family: var(--mackinac);
+    font-weight: 500;
+    font-size: 1.5rem;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    word-spacing: 0.025em;
+    color: var(--ink);
+    transition: color 0.2s ease;
+  }
+
+  .excerpt {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-text);
+    max-width: 36rem;
+  }
+
+  .go {
+    position: absolute;
+    right: 0.25rem;
+    top: 1.5rem;
+    color: var(--ink-faint);
+    transition:
+      color 0.2s ease,
+      transform 0.25s var(--ease);
+  }
+
+  .article:hover .title,
+  .article:hover .go {
+    color: var(--accent);
+  }
+
+  .article:hover .go {
+    transform: translate(2px, -2px);
+  }
+
+  @media (min-width: 640px) {
+    .title {
+      font-size: 1.75rem;
+    }
+  }
+
+  /* ── Garden card ── */
+  .garden {
+    padding: 1.5rem;
+    align-self: start;
+  }
+
+  .garden .label {
+    margin: 0 0 0.5rem;
+  }
+
+  .pitch {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .sections {
+    list-style: none;
+    margin-bottom: 1.5rem;
+  }
+
+  .sections li + li {
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  .sections a {
+    display: grid;
+    padding: 0.6rem 0.5rem;
+    margin-inline: -0.5rem;
+    border-radius: var(--radius-inner);
+    text-decoration: none;
+  }
+
+  .sections a:hover {
+    background: var(--hover-fill);
+  }
+
+  .sections .ui {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      column-gap: 4rem;
+    }
+
+    .garden {
+      position: sticky;
+      top: calc(var(--header-height) + 1.5rem);
+    }
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+// The basic agent loop: plan, call a tool, observe, update memory, repeat.
+const STEPS = [
+  { label: 'plan', x: 150, y: 26 },
+  { label: 'call tool', x: 262, y: 104 },
+  { label: 'observe', x: 150, y: 182 },
+  { label: 'remember', x: 38, y: 104 }
+];
+---
+
+<svg class="diagram agent" style="--vbw: 300" viewBox="0 0 300 210" role="img" aria-labelledby="agent-title">
+  <title id="agent-title">
+    An agent loop: plan, call a tool such as a browser or shell, observe the result, remember it, and plan again. The
+    model in the middle can be local or in the cloud.
+  </title>
+  <circle class="d-line d-dash" cx="150" cy="104" r="78"></circle>
+  <circle class="d-line d-accent orbit" cx="150" cy="104" r="78"></circle>
+  <rect class="d-accent-soft" x="96" y="82" width="108" height="44" rx="22" stroke-width="1.25"></rect>
+  <text class="d-title" x="150" y="101" text-anchor="middle">
+    model
+  </text>
+  <text x="150" y="116" text-anchor="middle">
+    local · cloud
+  </text>
+  {STEPS.map((step) => (
+    <g>
+      <rect class="d-node" x={step.x - 36} y={step.y - 13} width="72" height="26" rx="13" />
+      <text class="d-title" x={step.x} y={step.y + 4} text-anchor="middle">
+        {step.label}
+      </text>
+    </g>
+  ))}
+</svg>
+
+<style>
+  /* A short accent arc travels around the loop. */
+  .orbit {
+    stroke-width: 2;
+    stroke-dasharray: 60 430;
+    transform-origin: 150px 104px;
+    animation: orbit 6s linear infinite;
+  }
+
+  @keyframes orbit {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

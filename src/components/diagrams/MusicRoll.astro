@@ -1,0 +1,69 @@
+---
+// A small piano roll: a C major arpeggio pattern, the kind of thing code generates.
+const ROWS = 7; // C D E F G A B
+const NOTES: { step: number; row: number; length: number }[] = [
+  { step: 0, row: 6, length: 2 },
+  { step: 2, row: 4, length: 2 },
+  { step: 4, row: 2, length: 2 },
+  { step: 6, row: 0, length: 2 },
+  { step: 8, row: 5, length: 1 },
+  { step: 9, row: 3, length: 1 },
+  { step: 10, row: 1, length: 2 },
+  { step: 12, row: 2, length: 4 }
+];
+const cell = { w: 16, h: 11 };
+const left = 22;
+---
+
+<svg class="diagram roll" style="--vbw: 300" viewBox="0 0 300 100" role="img" aria-labelledby="roll-title">
+  <title id="roll-title">A piano roll showing a short generated arpeggio.</title>
+  {Array.from({ length: ROWS }, (_, row) => (
+    <path class="d-line grid" d={`M${left} ${12 + row * cell.h} H${left + 16 * cell.w}`} />
+  ))}
+  {Array.from({ length: 5 }, (_, bar) => (
+    <path class="d-line grid-bar" d={`M${left + bar * 4 * cell.w} 6 V${12 + (ROWS - 1) * cell.h + 6}`} />
+  ))}
+  {['B', 'A', 'G', 'F', 'E', 'D', 'C'].map((name, row) => (
+    <text x="4" y={15 + row * cell.h}>
+      {name}
+    </text>
+  ))}
+  {NOTES.map((note, index) => (
+    <rect
+      class="d-accent-fill note"
+      x={left + note.step * cell.w + 1}
+      y={7 + note.row * cell.h}
+      width={note.length * cell.w - 2}
+      height={cell.h - 2}
+      rx="2"
+      style={`--i: ${index}`}
+    />
+  ))}
+  <path class="d-line d-accent playhead" d={`M${left} 4 V84`}></path>
+</svg>
+
+<style>
+  .grid {
+    stroke-width: 0.75;
+    opacity: 0.45;
+  }
+
+  .grid-bar {
+    stroke-width: 0.75;
+  }
+
+  .note {
+    opacity: 0.85;
+  }
+
+  .playhead {
+    stroke-width: 1.5;
+    animation: play 5s linear infinite;
+  }
+
+  @keyframes play {
+    to {
+      transform: translateX(256px);
+    }
+  }
+</style>
