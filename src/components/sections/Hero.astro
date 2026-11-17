@@ -61,14 +61,12 @@ const years = yearsOfExperience();
         loading="eager"
         fetchpriority="high"
       />
-      <div class="facts meta">
-        <p>
-          <span class="k">since</span> 2016
-        </p>
-        <p>
-          <span class="k">based in</span> {PERSON.location}
-        </p>
-      </div>
+      <dl class="facts meta">
+        <dt>shipping since</dt>
+        <dd>2016</dd>
+        <dt>based in</dt>
+        <dd>{PERSON.location}</dd>
+      </dl>
     </div>
 
     <div class="currently card">
@@ -188,15 +186,23 @@ const years = yearsOfExperience();
     outline-offset: 4px;
   }
 
-  .facts p {
+  /* Two-column grid: the label column sizes to the longest label so the
+     values always share one left edge, whatever the label text. */
+  .facts {
+    display: grid;
+    grid-template-columns: max-content auto;
+    column-gap: 1ch;
+    align-items: baseline;
     margin: 0;
-    color: var(--ink);
   }
 
-  .facts .k {
-    display: inline-block;
-    min-width: 5.5rem;
+  .facts dt {
     color: var(--ink-muted);
+  }
+
+  .facts dd {
+    margin: 0;
+    color: var(--ink);
   }
 
   .currently {
