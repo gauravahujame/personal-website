@@ -36,26 +36,51 @@ export const CAPABILITIES: Capability[] = [
   },
   {
     title: 'Fintech',
-    body: 'Payment flows, digital wallets and mobile banking, where authentication, state and edge cases decide whether people trust the app.'
+    body: 'Payments, wallets, credit and deposit products, where authentication, state handling and edge cases decide whether people trust the app.'
   },
   {
     title: 'Leadership',
-    body: 'Leading teams, making architecture calls and taking products from the first commit through production.'
+    body: 'Leading frontend teams, making architecture decisions and taking products from the first commit to production.'
   }
 ];
 
 export const JOBS: Job[] = [
   {
+    company: 'FalconFS',
+    roles: ['Team Lead, Frontend'],
+    start: '2023-04',
+    summary:
+      'An Indian fintech company that builds lending, payments and banking products for partners such as Paytm, BharatPe and Jana Small Finance Bank. I lead the frontend team and build the React Native apps and React web apps behind those products.',
+    highlights: [
+      'Credit Line on UPI, prepaid wallets, credit cards and fixed deposits.',
+      'Apps and web journeys built for several partner brands.',
+      'Lead the frontend team and its architecture decisions.'
+    ],
+    stack: ['React Native', 'React'],
+    outcomes: []
+  },
+  {
+    company: 'Hola Cash',
+    roles: ['Senior Frontend Engineer'],
+    start: '2022-07',
+    end: '2023-04',
+    summary:
+      'A Mexican fintech company. I worked on the React Native and React apps for its digital payments wallet, built for the Mexican market.',
+    highlights: ['Peer-to-peer payments and bill payments.', 'Mobile app in React Native, web app in React.'],
+    stack: ['React Native', 'React'],
+    outcomes: []
+  },
+  {
     company: 'Daffodil Software',
     roles: ['Senior Associate IT', 'Associate Manager'],
     start: '2019-08',
-    // TODO(gaurav): confirm this is still your current role. Set `end` if it isn't.
+    end: '2022-07',
     summary:
-      'Joined as Senior Associate IT and grew into Associate Manager. I build React Native fintech apps, including one for a client in Mexico, and own them from development to deployment.',
+      'Joined as Senior Associate IT and was promoted to Associate Manager. I built React Native fintech apps for clients and owned them from development through deployment.',
     highlights: [
-      'Fintech apps for web and mobile, built and shipped end to end.',
-      'Lead engineering teams across several projects.',
-      'Make architecture decisions as projects grow.'
+      'Built and shipped fintech apps for web and mobile.',
+      'Led engineering teams across several client projects.',
+      'Made architecture decisions as projects grew.'
     ],
     stack: ['React Native', 'React', 'TypeScript', 'Node.js'],
     outcomes: []
@@ -66,8 +91,8 @@ export const JOBS: Job[] = [
     start: '2018-01',
     end: '2019-08',
     summary:
-      'An early-stage product startup. I helped build the product from the ground up and learned how a product takes shape when there is no existing code to lean on.',
-    highlights: ['React Native and GraphQL on the client.', 'AWS serverless infrastructure on the back end.'],
+      'An early-stage product startup. I helped build its product from scratch and learned how software takes shape when there is no existing codebase to lean on.',
+    highlights: ['React Native and GraphQL on the client.', 'Serverless AWS infrastructure on the back end.'],
     stack: ['React Native', 'GraphQL', 'AWS Lambda'],
     outcomes: []
   },
@@ -77,8 +102,8 @@ export const JOBS: Job[] = [
     start: '2016-08',
     end: '2017-12',
     summary:
-      'Started as an intern and stayed on as a developer, working on the Java backend of AppDirect, a subscription commerce platform.',
-    highlights: ['Enterprise Java services with Spring and Hibernate over SQL.'],
+      'Started as an intern and stayed on as a developer, working on the Java back end of AppDirect, a subscription commerce platform.',
+    highlights: ['Enterprise Java services built with Spring and Hibernate on SQL databases.'],
     stack: ['Java', 'Spring', 'Hibernate', 'SQL'],
     outcomes: []
   }
