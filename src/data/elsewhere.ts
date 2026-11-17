@@ -15,7 +15,7 @@ import marginalian from '../assets/elsewhere/favicons/marginalian.png';
 import codingTrain from '../assets/elsewhere/favicons/coding-train.png';
 
 /*
- * "Elsewhere": books, films, music and websites, shown in the section between
+ * "Elsewhere": books, films, music, people and websites, shown in the section between
  * Beyond the Code and From the Garden.
  *
  * ⚠️ SAMPLE SELECTIONS, TO BE REVIEWED. Every entry below is a suggested pick that
@@ -31,10 +31,15 @@ import codingTrain from '../assets/elsewhere/favicons/coding-train.png';
  *   because the site blocks scripted requests).
  * - Films have no poster: there is no keyless, permitted poster source, so they
  *   use the typographic title card. Add `image` to an entry to show artwork.
+ * - People have no portrait and show a monogram. If you add one, use a freely
+ *   licensed photo (e.g. Wikimedia Commons) and credit it as its licence requires.
+ *
+ * Exception: the People entries are Gaurav's own picks, not samples. Their
+ * annotations describe each person's work, not Gaurav's experience of it.
  * Covers are shown as small thumbnails that identify and link to the work.
  */
 
-export type ElsewhereCategory = 'books' | 'films' | 'music' | 'web';
+export type ElsewhereCategory = 'books' | 'films' | 'music' | 'people' | 'web';
 
 /** Reserved for later, e.g. marking something as currently reading/listening. */
 export type ElsewhereStatus = 'current' | 'revisiting' | 'queued';
@@ -44,7 +49,7 @@ export interface ElsewhereItem {
   id: string;
   category: ElsewhereCategory;
   title: string;
-  /** Author, director or artist. For websites, the person or team behind it. */
+  /** Author, director or artist. For people, what they do; for websites, who runs it. */
   creator?: string;
   year?: number;
   /** One short line. Observant, a little opinionated, no superlatives. */
@@ -72,6 +77,7 @@ export const ELSEWHERE_CATEGORIES: ElsewhereCategoryInfo[] = [
   { id: 'books', tab: 'Books', label: 'A few books worth sharing' },
   { id: 'films', tab: 'Films', label: 'A few films worth sharing' },
   { id: 'music', tab: 'Music', label: 'A few records worth sharing' },
+  { id: 'people', tab: 'People', label: 'People who’ve shaped how I think' },
   { id: 'web', tab: 'Web', label: 'Internet rabbit holes' }
 ];
 
@@ -198,6 +204,40 @@ export const ELSEWHERE: ElsewhereItem[] = [
     annotation: 'Proof that a simple piano idea can carry an enormous amount of emotion.',
     image: unaMattina,
     url: 'https://en.wikipedia.org/wiki/Una_Mattina'
+  },
+
+  // ── People (Gaurav's own picks) ──
+  {
+    id: 'terence-mckenna',
+    category: 'people',
+    title: 'Terence McKenna',
+    creator: 'Ethnobotanist and writer · 1946–2000',
+    annotation: 'Botany, language, and consciousness, talked about as if they were one subject.',
+    url: 'https://en.wikipedia.org/wiki/Terence_McKenna'
+  },
+  {
+    id: 'jordan-peterson',
+    category: 'people',
+    title: 'Jordan Peterson',
+    creator: 'Clinical psychologist · b. 1962',
+    annotation: 'Myth, psychology, and the argument that meaning starts with taking on responsibility.',
+    url: 'https://en.wikipedia.org/wiki/Jordan_Peterson'
+  },
+  {
+    id: 'hamilton-morris',
+    category: 'people',
+    title: 'Hamilton Morris',
+    creator: 'Chemist and journalist · b. 1987',
+    annotation: 'Pharmacology approached the way a chemist would, with patience and a lot of curiosity.',
+    url: 'https://en.wikipedia.org/wiki/Hamilton_Morris'
+  },
+  {
+    id: 'alan-watts',
+    category: 'people',
+    title: 'Alan Watts',
+    creator: 'Philosopher and writer · 1915–1973',
+    annotation: 'Eastern philosophy explained with a grin, and a good case for taking yourself less seriously.',
+    url: 'https://en.wikipedia.org/wiki/Alan_Watts'
   },
 
   // ── Web ──

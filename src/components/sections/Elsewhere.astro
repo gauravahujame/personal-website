@@ -11,7 +11,12 @@ import {
 } from '../../data/elsewhere';
 
 /** Rendered artwork width in CSS px per category (height follows the aspect ratio). */
-const ART_WIDTH: Record<Exclude<ElsewhereCategory, 'web'>, number> = { books: 80, films: 80, music: 88 };
+const ART_WIDTH: Record<Exclude<ElsewhereCategory, 'web'>, number> = {
+  books: 80,
+  films: 80,
+  music: 88,
+  people: 64
+};
 const FAVICON_SIZE = 20;
 
 const categories = ELSEWHERE_CATEGORIES.map((category) => ({ ...category, items: itemsFor(category.id) })).filter(
@@ -23,6 +28,11 @@ const current = pick ? ELSEWHERE.find((item) => item.id === pick.itemId) : undef
 
 const pad = (count: number): string => String(count).padStart(2, '0');
 const host = (url: string): string => new URL(url).hostname.replace(/^www\./, '');
+const initials = (name: string): string =>
+  name
+    .split(/\s+/)
+    .map((word) => word[0])
+    .join('');
 const byline = (item: ElsewhereItem): string => [item.creator, item.year].filter(Boolean).join(' · ');
 ---
 
@@ -116,6 +126,11 @@ const byline = (item: ElsewhereItem): string => [item.creator, item.year].filter
                       loading="lazy"
                       decoding="async"
                     />
+                  ) : category.id === 'people' ? (
+                    // No portrait: a monogram in the same round frame.
+                    <span class="art art--monogram" aria-hidden="true">
+                      {initials(item.title)}
+                    </span>
                   ) : (
                     // No permitted artwork: a typographic title card in the same frame.
                     <span class="art art--card" aria-hidden="true">
@@ -332,6 +347,24 @@ const byline = (item: ElsewhereItem): string => [item.creator, item.year].filter
   .panel--music .art {
     aspect-ratio: 1;
   }
+  /* People: a small round frame, portrait or monogram. */
+  .panel--people .work {
+    grid-template-columns: 4rem minmax(0, 1fr);
+  }
+  .panel--people .art {
+    aspect-ratio: 1;
+    border-radius: 50%;
+  }
+  .art--monogram {
+    display: grid;
+    place-items: center;
+    border-color: var(--line);
+    font-family: var(--mackinac);
+    font-style: italic;
+    font-size: 1.375rem;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
   .work:hover .art {
     transform: translateY(-2px);
   }
@@ -443,6 +476,9 @@ const byline = (item: ElsewhereItem): string => [item.creator, item.year].filter
     }
     .panel--music .work {
       grid-template-columns: 5.5rem minmax(0, 1fr);
+    }
+    .panel--people .work {
+      grid-template-columns: 4rem minmax(0, 1fr);
     }
   }
 
