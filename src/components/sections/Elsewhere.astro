@@ -1,0 +1,506 @@
+---
+import { Image } from 'astro:assets';
+import SectionHeader from '../SectionHeader.astro';
+import {
+  CURRENTLY_ENJOYING,
+  ELSEWHERE,
+  ELSEWHERE_CATEGORIES,
+  itemsFor,
+  type ElsewhereCategory,
+  type ElsewhereItem
+} from '../../data/elsewhere';
+
+/** Rendered artwork width in CSS px per category (height follows the aspect ratio). */
+const ART_WIDTH: Record<Exclude<ElsewhereCategory, 'web'>, number> = { books: 80, films: 80, music: 88 };
+const FAVICON_SIZE = 20;
+
+const categories = ELSEWHERE_CATEGORIES.map((category) => ({ ...category, items: itemsFor(category.id) })).filter(
+  (category) => category.items.length > 0
+);
+
+const pick = CURRENTLY_ENJOYING;
+const current = pick ? ELSEWHERE.find((item) => item.id === pick.itemId) : undefined;
+
+const pad = (count: number): string => String(count).padStart(2, '0');
+const host = (url: string): string => new URL(url).hostname.replace(/^www\./, '');
+const byline = (item: ElsewhereItem): string => [item.creator, item.year].filter(Boolean).join(' · ');
+---
+
+<section id="elsewhere" class="page section" aria-labelledby="elsewhere-title">
+  <SectionHeader
+    index="05"
+    kicker="elsewhere"
+    id="elsewhere-title"
+    title="Elsewhere"
+    subtitle="Things I read, watch, listen to, and keep coming back to."
+  />
+  <div class="layout" data-elsewhere data-reveal>
+    <div class="rail">
+      <p class="intro">Not everything interesting happens in an editor.</p>
+      {current && (
+        <p class="current small">
+          <span class="label">Currently enjoying</span>
+          <a href={current.url}>{current.title}</a>
+          {current.creator && <span class="meta"> · {current.creator}</span>}
+          {pick?.note && <span class="note">{pick.note}</span>}
+        </p>
+      )}
+      <div class="tabs" role="tablist" aria-label="Elsewhere categories" aria-orientation="horizontal">
+        {categories.map((category, index) => (
+          <button
+            type="button"
+            role="tab"
+            class="tab"
+            id={`elsewhere-tab-${category.id}`}
+            aria-controls={`elsewhere-panel-${category.id}`}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            tabindex={index === 0 ? 0 : -1}
+          >
+            <span class="ui">{category.tab}</span>
+            <span class="count meta" aria-hidden="true">
+              {pad(category.items.length)}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="panels">
+      {categories.map((category, index) => (
+        <div
+          class:list={['panel', `panel--${category.id}`]}
+          id={`elsewhere-panel-${category.id}`}
+          role="tabpanel"
+          aria-labelledby={`elsewhere-tab-${category.id}`}
+          data-active={index === 0 ? '' : undefined}
+        >
+          {/* Without JS every panel shows, so each carries its own heading. */}
+          <h3 class="label panel-label">{category.label}</h3>
+          <ul class="items" role="list">
+            {category.items.map((item) =>
+              category.id === 'web' ? (
+                <li class="site">
+                  <span class="favicon">
+                    {item.image && (
+                      <Image
+                        src={item.image}
+                        alt=""
+                        width={FAVICON_SIZE}
+                        height={FAVICON_SIZE}
+                        densities={[1, 2]}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                  </span>
+                  <span class="text">
+                    <a class="title ext" href={item.url}>
+                      {item.title}
+                    </a>
+                    <span class="meta byline">
+                      {host(item.url)}
+                      {item.creator && ` · ${item.creator}`}
+                    </span>
+                    <span class="annotation">{item.annotation}</span>
+                  </span>
+                </li>
+              ) : (
+                <li class="work">
+                  {item.image ? (
+                    <Image
+                      class="art"
+                      src={item.image}
+                      alt={item.imageAlt ?? `Cover of ${item.title}`}
+                      width={ART_WIDTH[category.id as keyof typeof ART_WIDTH]}
+                      densities={[1, 2]}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    // No permitted artwork: a typographic title card in the same frame.
+                    <span class="art art--card" aria-hidden="true">
+                      {item.year && <span class="meta">{item.year}</span>}
+                      <span class="card-title">{item.title}</span>
+                    </span>
+                  )}
+                  <span class="text">
+                    <a class="title ext" href={item.url}>
+                      {item.title}
+                    </a>
+                    {byline(item) && <span class="meta byline">{byline(item)}</span>}
+                    <span class="annotation">{item.annotation}</span>
+                  </span>
+                </li>
+              )
+            )}
+          </ul>
+        </div>
+      ))}
+      <p class="aside meta">Some recommendations. Some rabbit holes. No particular order.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Tabs (WAI-ARIA APG pattern, automatic activation). Without JS the tablist is
+  // hidden and every panel is shown in order.
+  const DESKTOP = matchMedia('(min-width: 1024px)');
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-elsewhere]')) {
+    const tablist = root.querySelector<HTMLElement>('[role="tablist"]');
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    if (!tablist || tabs.length === 0) continue;
+
+    const select = (next: HTMLButtonElement, focus: boolean): void => {
+      for (const tab of tabs) {
+        const selected = tab === next;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        const panel = document.getElementById(tab.getAttribute('aria-controls') ?? '');
+        panel?.toggleAttribute('data-active', selected);
+      }
+      if (focus) next.focus();
+    };
+
+    const orient = (): void => tablist.setAttribute('aria-orientation', DESKTOP.matches ? 'vertical' : 'horizontal');
+    orient();
+    DESKTOP.addEventListener('change', orient);
+
+    tablist.addEventListener('click', (event) => {
+      const tab = (event.target as Element).closest<HTMLButtonElement>('[role="tab"]');
+      if (tab) select(tab, false);
+    });
+
+    tablist.addEventListener('keydown', (event) => {
+      const index = tabs.indexOf(document.activeElement as HTMLButtonElement);
+      if (index < 0) return;
+      const last = tabs.length - 1;
+      const moves: Record<string, number> = {
+        ArrowRight: index === last ? 0 : index + 1,
+        ArrowDown: index === last ? 0 : index + 1,
+        ArrowLeft: index === 0 ? last : index - 1,
+        ArrowUp: index === 0 ? last : index - 1,
+        Home: 0,
+        End: last
+      };
+      const target = moves[event.key];
+      if (target === undefined) return;
+      event.preventDefault();
+      select(tabs[target]!, true);
+    });
+  }
+</script>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  /* ── Rail: intro line and category selector ── */
+  .rail {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+    min-width: 0;
+  }
+  /* Personal register, as in Beyond the Code: italic serif. */
+  .intro {
+    margin: 0;
+    font-family: var(--mackinac);
+    font-style: italic;
+    font-size: 1.1875rem;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .current {
+    display: grid;
+    gap: 0.15rem;
+    margin: 0;
+  }
+  .current .note {
+    color: var(--ink-muted);
+  }
+
+  /* Mobile: a quiet segmented control. */
+  .tabs {
+    display: none;
+  }
+  :global(.js) .tabs {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    padding: 0.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+  }
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 2.75rem; /* touch target */
+    padding: 0.25rem 0.5rem;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--ink-text);
+    font-size: 1rem;
+    cursor: pointer;
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease;
+  }
+  .tab:hover {
+    color: var(--accent);
+  }
+  .tab[aria-selected='true'] {
+    color: var(--accent);
+    background: var(--accent-fill);
+  }
+  .tab:focus-visible {
+    outline-offset: -2px;
+    border-radius: var(--radius-pill);
+  }
+  .count {
+    display: none;
+    color: var(--ink-muted);
+  }
+  .tab[aria-selected='true'] .count {
+    color: var(--accent);
+  }
+
+  /* ── Panels ── */
+  .panels {
+    min-width: 0;
+  }
+  .panel + .panel {
+    margin-top: 2.5rem;
+  }
+  :global(.js) .panel:not([data-active]) {
+    display: none;
+  }
+  :global(.js) .panel {
+    margin-top: 0;
+    animation: panel-in 0.35s var(--ease);
+  }
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+  .panel-label {
+    margin: 0 0 0.25rem;
+    font-family: var(--bodyFont);
+    letter-spacing: 0.05em;
+  }
+  .items {
+    list-style: none;
+    display: grid;
+  }
+  .items li {
+    position: relative;
+    display: grid;
+    align-items: start;
+    gap: 1.1rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  /* Books, films, music: artwork beside a short entry. */
+  .work {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+  }
+  .panel--music .work {
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+  }
+  .art {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid var(--line-subtle);
+    background: var(--well);
+    transition: transform 0.3s var(--ease);
+  }
+  /* Book covers keep their own proportions (all close to 2:3) so no title gets cropped. */
+  .panel--books .art {
+    aspect-ratio: auto;
+  }
+  .panel--music .art {
+    aspect-ratio: 1;
+  }
+  .work:hover .art {
+    transform: translateY(-2px);
+  }
+  .art--card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.5rem 0.45rem 0.55rem;
+    border-color: var(--line);
+    /* A single accent hairline, like a ticket stub. */
+    box-shadow: inset 0 2px 0 var(--accent-fill-strong);
+  }
+  .art--card .meta {
+    font-size: 0.625rem;
+  }
+  .card-title {
+    font-family: var(--mackinac);
+    font-style: italic;
+    font-size: 0.75rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    hyphens: auto;
+  }
+
+  .text {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+  .title {
+    font-family: var(--mackinac);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.25rem;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    text-wrap: balance;
+  }
+  /* The whole entry is the click target; the title stays the link's name. */
+  .title::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .title::after {
+    color: var(--ink-faint);
+    font-style: normal;
+  }
+  li:hover .title,
+  li:hover .title::after {
+    color: var(--accent);
+  }
+  li:has(.title:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-inner);
+  }
+  .title:focus-visible {
+    outline: none;
+  }
+  .annotation {
+    margin-top: 0.3rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-text);
+    text-wrap: pretty;
+  }
+
+  /* Web: compact link rows with favicons. */
+  .site {
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+  }
+  .favicon {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-top: 0.1rem;
+    border-radius: var(--radius-inner);
+    border: 1px solid var(--line-subtle);
+    /* Stays light in dark mode: most favicons are drawn for a light browser tab. */
+    background: var(--favicon-tile);
+  }
+  .favicon img {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+  }
+  .site .title {
+    font-size: 1.1875rem;
+  }
+
+  .aside {
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  @media (min-width: 640px) {
+    .items {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 2.5rem;
+    }
+    .work {
+      grid-template-columns: 5rem minmax(0, 1fr);
+    }
+    .panel--music .work {
+      grid-template-columns: 5.5rem minmax(0, 1fr);
+    }
+  }
+
+  /* Desktop: the selector becomes a vertical index under the running head. */
+  @media (min-width: 1024px) {
+    .layout {
+      grid-template-columns: 14rem minmax(0, 1fr);
+      column-gap: 2rem;
+    }
+    .rail {
+      position: sticky;
+      top: calc(var(--header-height) + 1.5rem);
+      gap: 1.75rem;
+    }
+    .intro {
+      font-size: 1.125rem;
+      max-width: 12rem;
+    }
+    :global(.js) .tabs {
+      grid-auto-flow: row;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: none;
+      border-top: 1px solid var(--line-subtle);
+    }
+    .tab {
+      justify-content: space-between;
+      min-height: 2.5rem;
+      padding: 0.5rem 0 0.5rem 0.85rem;
+      border-radius: 0;
+      border-bottom: 1px solid var(--line-subtle);
+      text-align: left;
+      position: relative;
+    }
+    .tab[aria-selected='true'] {
+      background: none;
+    }
+    /* Accent tick marks the open category. */
+    .tab::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 2px;
+      height: 0;
+      background: var(--accent);
+      transform: translateY(-50%);
+      transition: height 0.25s var(--ease);
+    }
+    .tab[aria-selected='true']::before {
+      height: 1.1rem;
+    }
+    .tab:focus-visible {
+      border-radius: var(--radius-inner);
+    }
+    .count {
+      display: inline;
+    }
+  }
+</style>

@@ -97,6 +97,8 @@
   --key-white: #fffdf7;
   --key-black: #22183c;
   --key-lit: #d9c9f7;
+  /* Behind third-party favicons, which assume a light background. */
+  --favicon-tile: #fffdf7;
 }
 
 /* ── Colour: dark ──────────────────────────────────────────────── */
@@ -128,6 +130,7 @@
   --key-white: #e6e4d9;
   --key-black: #1b1a18;
   --key-lit: #b1a5dc;
+  --favicon-tile: #e6e4d9;
 }
 
 /* ── Mode-independent tokens ───────────────────────────────────── */

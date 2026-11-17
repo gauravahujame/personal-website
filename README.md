@@ -27,6 +27,7 @@ All copy lives in `src/data/`. Components only render it.
 | `lab.ts`        | The Lab entries: summary, topics, status, illustration, size                             |
 | `experience.ts` | Capability summary, jobs, education. `outcomes` is an empty slot for verified numbers    |
 | `interests.ts`  | Beyond the Code                                                                          |
+| `elsewhere.ts`  | Elsewhere: books, films, music and websites, plus the optional "Currently enjoying" pick |
 | `writing.ts`    | Selected garden notes and the garden's sections                                          |
 | `status.ts`     | Status values: `completed`, `active`, `experimental`, `concept`                          |
 
@@ -34,14 +35,15 @@ All copy lives in `src/data/`. Components only render it.
 - **Add a Lab entry:** append to `LAB` with a `size` (`large`, `medium`, `small`). `visual` is optional.
 - **New illustration:** add an SVG component in `src/components/diagrams/`, add its key to the `visual` type, and register it in `diagrams/Visual.astro`.
 - **Statuses:** only set one when it's true. Leave `status` out and no badge renders.
+- **Elsewhere:** append to `ELSEWHERE` in `elsewhere.ts`. Put artwork in `src/assets/elsewhere/` (covers ~2:3, albums 1:1, favicons square) and import it; films without `image` show a typographic title card. Set `CURRENTLY_ENJOYING` to an entry id to show that line. The seed entries are sample picks to review.
 - **Notes:** the garden's RSS feed lists folders and tags rather than notes, so `writing.ts` is curated by hand. Check each URL resolves.
 
 ## Structure
 
 | Path                                            | Role                                                                            |
 | ----------------------------------------------- | ------------------------------------------------------------------------------- |
-| `src/pages/index.astro`                         | Composes the seven sections                                                     |
-| `src/components/sections/`                      | Hero, SelectedWork, Lab, Experience, Beyond, Garden, Contact                    |
+| `src/pages/index.astro`                         | Composes the eight sections                                                     |
+| `src/components/sections/`                      | Hero, SelectedWork, Lab, Experience, Beyond, Elsewhere, Garden, Contact         |
 | `src/components/`                               | Header, Footer, ThemeToggle, SectionHeader, ProjectCard, StatusBadge, StackList |
 | `src/components/diagrams/`, `beyond/`           | Inline SVG illustrations, themed through CSS tokens                             |
 | `src/layouts/Base.astro`                        | Head, SEO and structured data, fonts, theme script, scroll reveals              |
