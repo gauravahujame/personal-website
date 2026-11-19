@@ -40,7 +40,7 @@ export const PERSON: Person = {
   role: 'Software engineer',
   location: 'New Delhi',
   country: 'India',
-  email: 'gauravahuja.me@gmail.com',
+  email: 'hello@gauravahuja.dev',
   careerStart: '2016-08',
   description:
     'Gaurav Ahuja is a software engineer in New Delhi with over ten years of experience building web and mobile apps, fintech products and engineering teams. He also experiments with AI agents, local language models, homelab infrastructure, electronics and music.'
